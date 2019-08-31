@@ -1,0 +1,28 @@
+{
+  "name": "@ludobrew/game-exalted-3e",
+  "publishConfig": {
+    "access": "public"
+  },
+  "version": "1.0.0",
+  "description": "LudoBrew core dependancies",
+  "author": "Aaron Haaf",
+  "repository": {
+    "url": "https://github.com/ludobrew/core",
+    "type": "git"
+  },
+  "files": [
+    "./*.js",
+    "./**/*.js",
+    "./**/*.d.ts"
+  ],
+  "license": "MIT",
+  "scripts": {
+    "start": "yarn watch",
+    "develop": "gatsby develop",
+    "watch": "tsc -w",
+    "build": "tsc"
+  },
+  "devDependencies": {
+    "@ludobrew/core": "*"
+  }
+}
