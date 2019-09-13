@@ -9,6 +9,8 @@ import { Charmlike } from "./Charmlike"
 import { generateFrontmatterCheckers } from "@ludobrew/core/markdown"
 import { FileNode } from "@ludobrew/core/gatsbyNodeTools"
 
+export const charmNodeType = "ExaltedCharm" as const
+
 type NewNode = NodeInput & {
   internal: {}
 }
@@ -90,7 +92,7 @@ export const makeCharmNode = (
         ...otherFrontmatter,
         id: createNodeId(`ExaltedCharm${splat}${name}`),
         internal: {
-          type: "ExaltedCharm",
+          type: charmNodeType,
           contentDigest: createContentDigest(otherFrontmatter),
           description: "It does stuff",
         },
