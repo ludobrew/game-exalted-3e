@@ -8,6 +8,7 @@ import {
 import { Charmlike, CharmRequirement } from "./Charmlike"
 import { generateFrontmatterCheckers } from "@ludobrew/core/markdown"
 import { FileNode } from "@ludobrew/core/gatsbyNodeTools"
+import dashify from "dashify"
 
 export const charmNodeType = "ExaltedCharm" as const
 
@@ -43,18 +44,31 @@ type Charm = {
   rating: number
 } & Charmlike
 
-export type CharmNode = Charm &
-  Node & {
-    /**
-     * Created after linking everything up
-     */
-    fields?: {
-      /**
-       * Link info so that other stuff can be automagically hotlinked.
-       */
-      requirements?: CharmRequirement[]
-    }
-  }
+export type CharmlikeNodefields = {
+  /**
+   * File path for error messages, should be made on creation of node
+   */
+  filePath: string
+
+  /**
+   * Url for thing, should be made on creation of node
+   */
+  url: string
+
+  /**
+   * Link info so that other stuff can be automagically hotlinked.
+   */
+  requirements?: CharmRequirement[]
+}
+
+export type CharmlikeNode<T> = T & {
+  /**
+   * Created after linking everything up
+   */
+  fields: CharmlikeNodefields
+} & Node
+
+export type CharmNode = CharmlikeNode<Charm>
 
 const simpleResolver = (field: string, type: string, fallback: any) => {
   return {
@@ -79,7 +93,7 @@ export const makeCharmNode = (
     content,
     ...otherFrontmatter
   } = (mdxNode as RawCharmMDXNode).frontmatter
-  const { createNode, createParentChildLink } = actions
+  const { createNode, createParentChildLink, createNodeField } = actions
   const { errorMessage, valuesPresent } = generateFrontmatterCheckers(
     requiredCharmFrontmatter,
   )
@@ -97,10 +111,12 @@ export const makeCharmNode = (
         reporter,
       )
 
-      const { name, splat } = otherFrontmatter as Charm
+      const { name, splat, trait } = otherFrontmatter as Charm
 
-      const newNode: NodeInput = {
-        ...otherFrontmatter,
+      const newNode: NodeInput & Charmlike = {
+        charmType: "splat",
+        charmSource: splat,
+        ...(otherFrontmatter as Charm),
         id: createNodeId(`ExaltedCharm${splat}${name}`),
         internal: {
           type: charmNodeType,
@@ -108,11 +124,27 @@ export const makeCharmNode = (
           description: "It does stuff",
         },
       }
-      console.log(`Made ${fileNode.relativePath}`)
       createNode(newNode)
-
       //@ts-ignore child is defined as Node when it could be NodeInput
-      // createParentChildLink({ parent: mdxNode, child: newNode })
+      createParentChildLink({ parent: mdxNode, child: newNode })
+
+      createNodeField({
+        //@ts-ignore parent is missing on new node input and that is "fine"
+        node: newNode,
+        name: "filePath",
+        value: fileNode.relativePath,
+      })
+
+      // Should make
+      //  /solar/athletics/gripping-sunlight
+      //  /uags/bureaucracy/little-spider
+      const url = "/" + [splat, trait, name].map(s => dashify(s)).join("/")
+
+      //@ts-ignore parent is missing on new node input and that is "fine"
+      createNodeField({ node: newNode, name: "url", value: url })
+
+      console.log(`Made ${fileNode.relativePath}`)
+
       return
     default:
       reporter.error(errorMessage(fileNode, "content", types))
