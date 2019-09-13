@@ -28,7 +28,6 @@ export const handleMDXNode = async (
       break
     case "Charms":
       return makeCharmNode(props, fileNode, options)
-      break
     case "Pages":
       break
     case "QuickCharacters":
