@@ -1,11 +1,5 @@
-import {
-  CreateNodeArgs,
-  PluginOptions,
-  Node,
-  Reporter,
-  NodeInput,
-} from "gatsby"
-import { Charmlike, CharmRequirement } from "./Charmlike"
+import { CreateNodeArgs, PluginOptions, Node, NodeInput } from "gatsby"
+import { Charmlike, CharmlikeNode } from "./Charmlike"
 import { generateFrontmatterCheckers } from "@ludobrew/core/markdown"
 import { FileNode } from "@ludobrew/core/gatsbyNodeTools"
 import dashify from "dashify"
@@ -43,30 +37,6 @@ type Charm = {
   splat: string
   rating: number
 } & Charmlike
-
-export type CharmlikeNodefields = {
-  /**
-   * File path for error messages, should be made on creation of node
-   */
-  filePath: string
-
-  /**
-   * Url for thing, should be made on creation of node
-   */
-  url: string
-
-  /**
-   * Link info so that other stuff can be automagically hotlinked.
-   */
-  requirements?: CharmRequirement[]
-}
-
-export type CharmlikeNode<T> = T & {
-  /**
-   * Created after linking everything up
-   */
-  fields: CharmlikeNodefields
-} & Node
 
 export type CharmNode = CharmlikeNode<Charm>
 
