@@ -5,7 +5,7 @@ import {
   Reporter,
   NodeInput,
 } from "gatsby"
-import { Charmlike } from "./Charmlike"
+import { Charmlike, CharmRequirement } from "./Charmlike"
 import { generateFrontmatterCheckers } from "@ludobrew/core/markdown"
 import { FileNode } from "@ludobrew/core/gatsbyNodeTools"
 
@@ -43,13 +43,24 @@ type Charm = {
   rating: number
 } & Charmlike
 
-type CharmNode = Charm & Node
+export type CharmNode = Charm &
+  Node & {
+    /**
+     * Created after linking everything up
+     */
+    fields?: {
+      /**
+       * Link info so that other stuff can be automagically hotlinked.
+       */
+      requirements?: CharmRequirement[]
+    }
+  }
 
 const simpleResolver = (field: string, type: string, fallback: any) => {
-  return ({
+  return {
     type,
-    resolve: ( parent: Record<any, any> ) => parent[field] || fallback
-  })
+    resolve: (parent: Record<any, any>) => parent[field] || fallback,
+  }
 }
 
 export const makeCharmNode = (
