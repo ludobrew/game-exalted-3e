@@ -6,16 +6,11 @@ module.exports = (themeOptions: any) => {
   return {
     plugins: [
       ...generateSourceFilesystemPlugins({
-        currentDir: resolve('.'),
+        currentDir: resolve("."),
         contentDirectories,
         pluginId,
       }),
-      {
-        resolve: "gatsby-plugin-mdx",
-        options: {
-          extensions: [".mdx", ".md"],
-        },
-      },
+      "@ludobrew/core",
     ],
   }
 }

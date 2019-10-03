@@ -16,14 +16,15 @@
       "dom",
       "scripthost",
       "esnext"
-    ],
+    ]
   },
   "include": [
-    "src",
+    "Modules.d.ts",
     "gatsby-*.ts",
+    "nodes"
   ],
   "exclude": [
     "node_modules",
     "*.test.ts"
-  ],
+  ]
 }

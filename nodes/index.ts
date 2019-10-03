@@ -2,7 +2,7 @@ import { CreateNodeArgs, PluginOptions, Node } from "gatsby"
 import { FileNode, getSourceInstanceName } from "@ludobrew/core/gatsbyNodeTools"
 import { makePageNode } from "./Pages"
 import { makeCharmNode } from "./Charm"
-import { contentDirectories, pluginId } from "../data";
+import { contentDirectories, pluginId } from "../src/data";
 
 export const handleMDXNode = async (
   props: CreateNodeArgs,

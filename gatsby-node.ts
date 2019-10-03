@@ -1,12 +1,11 @@
-import { GatsbyNode, CreateSchemaCustomizationArgs, PluginOptions } from "gatsby"
-import { contentDirectories, pluginId } from "./src/data"
-import { handleMDXNode } from "./src/nodes"
+import {
+  GatsbyNode,
+  CreateSchemaCustomizationArgs,
+  PluginOptions,
+} from "gatsby"
+import { contentDirectories, pluginId, ThemeOptions } from "./src/data"
+import { handleMDXNode } from "./nodes"
 import { createDirectories } from "@ludobrew/core/file"
-
-
-type ThemeOptions = Partial<{
-  something: string
-}>
 
 const api: GatsbyNode = {
   onPreBootstrap: async (props, options) => {
@@ -20,10 +19,8 @@ const api: GatsbyNode = {
   },
 
   onCreateNode: async (props, themeOptions) => {
-    const { something } = themeOptions as ThemeOptions
     const { node } = props
 
-    console.log("Inspecting", node.internal.type)
     switch (node.internal.type) {
       case "Mdx":
         return handleMDXNode(props, themeOptions)
@@ -32,119 +29,99 @@ const api: GatsbyNode = {
     }
   },
 
-  //@ts-ignore
-  createSchemaCustomization: (props: CreateSchemaCustomizationArgs, options: PluginOptions) => {
-    // const { getNodes, actions, schema } = props
-    // const { createTypes } = actions
-    // const builder:any = schema
+  createSchemaCustomization: async (
+    props: CreateSchemaCustomizationArgs,
+    themeOptions: ThemeOptions & PluginOptions,
+  ) => {
+    const { actions } = props
+    const { createTypes, createFieldExtension } = actions
 
-    // const simpleResolver = (field: string, type: string, fallback: any) => {
-    //   return ({
-    //     type,
-    //     resolve: ( parent: Record<any, any> ) => parent[field] || fallback
-    //   })
-    // }
+    const typeDefs = `
+      enum CharmType {
+        splat
+        ma
+        evocation
+        eclipse
+        other
+      }
 
-    // const typedefs = []
+      interface Charmlike @nodeInterface {
 
-    // const ExaltedCharmRequirement = `
-    //   type ExaltedCharmRequirement implements Node @dontInfer {
-    //     source: String
-    //     type: String
-    //     name: String!
-    //   }
-    // `
-    // typedefs.push(ExaltedCharmRequirement)
+        id: ID!
 
-    // const CharmlikeFields = {
-    //   name: "String!",
-    //   essence: simpleResolver("essence", "Int!", 1),
-    //   type: simpleResolver("type", "String!", "Supplemental"),
-    //   cost: simpleResolver("cost", "String!", "—"),
-    //   duration: simpleResolver("duration", "String!", "Instant"),
-    //   categories: simpleResolver("categories", "[String!]!", ["None"]),
-    //   keywords: simpleResolver("keywords", "[String!]!", ["None"]),
-    //   shortDescription: simpleResolver("shortDescription", "String!", ""),
+        """
+        Type of thing
+        """
+        charmType: CharmType
 
-      // requiredCharms: {
-      //   type: "[ExaltedCharmRequirement! | String!]!",
-      //   resolve: (parent: any) => {
-      //     return parent.requiredCharms || ["None"]
-      //   }
-      // },
-    // }
+        """
+        Like [Solar], [Crazy Teacup], [Bats in the Belfry Style], [Jam Commissioner Ogwan]
+        """
+        charmSource: String
 
-    // const ExaltedCharmlike = builder.buildObjectType({
-    //   name: "ExaltedCharmlike",
-    //   interfaces: ['Node'],
-    //   extensions: {
-    //     infer: false
-    //   },
-    //   fields: CharmlikeFields
+        """
+        Like for determining "Orator" or "Power" craft charms
+        """
+        category: String
 
-    // })
-    // typedefs.push(ExaltedCharmlike)
+        """
+        Name of charm
+        """
+        name: String
 
-    // const ExaltedCharm = `
-    //   type ExaltedCharm implements ExaltedCharmlike {
-    //     trait: String!
-    //     splat: String!
-    //     rating: Number!
-    //   }
-    // `
+        """
+        Essence prerequisite
+        """
+        essence: Int
 
-    // createTypes(typedefs)
+        """
+        Simple/Uniform and all that
+        """
+        type: String
 
-    // const ExaltedCharm = {
-    //   name: "ExaltedCharm",
-    //   interfaces: ['Node'],
-    //   extensions: {
-    //     infer: false
-    //   },
-    //   fields: {
-    //     ...CharmlikeFields,
-    //     trait: "String!",
-    //     splat: "String!",
-    //     rating: "Int!",
-    //   }
-    // }
-    // createTypes(ExaltedCharm)
+        """
+        Mote costs
+        """
+        cost: String
 
-    // const PossibleCharmRequirements = `union ExaltedRequiredCharms = ExaltedCharmRequirement | String`
-    // const PossibleCharmRequirementsResolver = builder.buildObjectType({
-    //   PossibleCharmRequirements: {
-    //     __resolveType: (object: any) => {
-    //       if (typeof object === "string") {
-    //         return "String"
-    //       }
-    //       if (object.name) {
-    //         return "ExaltedCharmRequirement"
-    //       }
-    //       return null
-    //     }
-    //   }
-    // })
+        """
+        Scene/Instant and all that
+        """
+        duration: String
 
-    // const CharmRequirementDef = builder.buildObjectType({
-    //   name: "ExaltedCharmRequirement",
-    //   fields: {
-    //     source: "String",
-    //     name: "String!",
-    //   },
-    //   interfaces: ['Node'],
-    //   extensions: {
-    //     infer: false,
-    //   },
-    // })
+        """
+        List of charms to do
+        """
+        requires: [String]
 
+        """
+        Like "social" or whatever.
+        """
+        tags: [String]
 
-  }
+        """
+        Uniform/Decisive-only and all that
+        """
+        keywords: [String]
+
+        """
+        The "lowdown" synopsis of a charm
+        """
+        shortDescription: String
+      }
+
+      type ExaltedCharm implements Node & Charmlike @childOf(Mdx)
+      type ExaltedCharmlikeConnection implements Node
+
+    `
+    createTypes(typeDefs)
+  },
 }
 
 // export const createPages = api.createPages
 // export const createPagesStatefully = api.createPagesStatefully
 // export const createResolvers = api.createResolvers
-// export const createSchemaCustomization = api.createSchemaCustomization
+export const createSchemaCustomization = api.createSchemaCustomization
 // export const generateSideEffects = api.generateSideEffects
 // export const onCreateBabelConfig = api.onCreateBabelConfig
 // export const onCreateDevServer = api.onCreateDevServer

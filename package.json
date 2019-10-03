@@ -12,6 +12,7 @@
   },
   "files": [
     "./*.js",
+    "./*.d.ts",
     "./**/*.js",
     "./**/*.d.ts"
   ],
@@ -23,6 +24,9 @@
     "build": "tsc"
   },
   "devDependencies": {
-    "@ludobrew/core": "*"
+    "@ludobrew/core": "*",
+    "@types/dashify": "1.0.0",
+    "dashify": "2.0.0",
+    "gatsby-plugin-typescript": "2.1.11"
   }
 }
