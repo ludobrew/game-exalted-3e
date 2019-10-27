@@ -1,12 +1,39 @@
-import { CreateNodeArgs, PluginOptions, Node, NodeInput } from "gatsby"
-import { Charmlike, CharmlikeNode } from "./Charmlike"
+import {
+  CreateNodeArgs,
+  PluginOptions,
+  Node,
+  NodeInput,
+  CreatePagesArgs,
+} from "gatsby"
+import {
+  Charmlike,
+  CharmlikeNode,
+  makeFriendlyLinks,
+  makeRequirementLinks,
+} from "./Charmlike"
 import { generateFrontmatterCheckers } from "@ludobrew/core/markdown"
 import { FileNode } from "@ludobrew/core/gatsbyNodeTools"
 import dashify from "dashify"
 import { resolve } from "path"
-import { ThemeOptions, baseSplats } from "../src/data"
+import { ThemeOptions, baseSplats } from "./data"
+import { pathify } from "@ludobrew/core/gatsbyNodeTools"
 
 export const charmNodeType = "ExaltedCharm" as const
+
+const splatPageComponent = resolve(
+  __dirname,
+  "../src/providers/SplatPageProvider.tsx",
+)
+
+const splatTraitPageComponent = resolve(
+  __dirname,
+  "../src/providers/SplatTraitPageProvider.tsx",
+)
+
+const splatCharmPageComponent = resolve(
+  __dirname,
+  "../src/providers/SplatCharmPageProvider.tsx",
+)
 
 const types = ["preface", "charm"] as const
 
@@ -29,12 +56,38 @@ type CharmPagePreface = {
 
 type CharmPagePrefaceNode = CharmPagePreface & NodeInput
 
+const keys = ["a", "b"] as const
+
+const result: Record<typeof keys[number], number> = {
+  a: 1,
+  b: 2,
+}
+
+export const allCharmlikeProperties: Array<keyof Charmlike> = [
+  "charmType",
+  "charmSource",
+  "name",
+  "essence",
+  "type",
+  "cost",
+  "duration",
+  "requires",
+  "tags",
+  "keywords",
+  "shortDescription",
+]
+
 const requiredCharmFrontmatter = ["trait", "splat", "rating"]
-type Charm = {
+export type Charm = {
   trait: string
   splat: string
   rating: number
 } & Charmlike
+
+export const allCharmProperties: Array<keyof Charm> = [
+  ...allCharmlikeProperties,
+  ...(requiredCharmFrontmatter as Array<keyof Charm>),
+]
 
 export type CharmNode = CharmlikeNode<Charm>
 
@@ -54,27 +107,16 @@ export const makeCharmNode = (
     content,
     ...otherFrontmatter
   } = (mdxNode as RawCharmMDXNode).frontmatter
-  const {
-    createNode,
-    createParentChildLink,
-    createNodeField,
-    createPage,
-  } = actions
+  const { createNode, createParentChildLink, createPage } = actions
   const { errorMessage, valuesPresent } = generateFrontmatterCheckers(
     requiredCharmFrontmatter,
   )
-
-  const { customSplats } = options as ThemeOptions
-  const possibleSplats: string[] = []
-  possibleSplats.push(...baseSplats)
-  possibleSplats.push(...(customSplats || []))
 
   switch (content) {
     case "preface":
       console.log(`Doing preface ${fileNode.relativePath}`)
       return
     case "charm":
-      console.log("Doing charm")
       valuesPresent(
         requiredCharmFrontmatter,
         otherFrontmatter as Charm,
@@ -84,10 +126,17 @@ export const makeCharmNode = (
 
       const { name, splat, trait } = otherFrontmatter as Charm
 
+      // Should make
+      //  /solar/athletics/gripping-sunlight
+      //  /uags/bureaucracy/little-spider
+      const url = "/" + [splat, trait, name].map(s => dashify(s)).join("/")
+
       const newNode: NodeInput & Charmlike = {
         charmType: "splat",
         charmSource: splat,
         ...(otherFrontmatter as Charm),
+        parent: mdxNode.id,
+        url,
         id: createNodeId(`${mdxNode.id} >>> ExaltedCharm${splat}${name}`),
         internal: {
           type: charmNodeType,
@@ -99,116 +148,129 @@ export const makeCharmNode = (
       //@ts-ignore child is defined as Node when it could be NodeInput
       createParentChildLink({ parent: mdxNode, child: newNode })
 
-      // createNodeField({
-      //   //@ts-ignore parent is missing on new node input and that is "fine"
-      //   node: newNode,
-      //   name: "filePath",
-      //   value: fileNode.relativePath,
-      // })
-
-      // Should make
-      //  /solar/athletics/gripping-sunlight
-      //  /uags/bureaucracy/little-spider
-      const url = "/" + [splat, trait, name].map(s => dashify(s)).join("/")
-
-      //@ts-ignore parent is missing on new node input and that is "fine"
-      // createNodeField({ node: newNode, name: "url", value: url })
-
-      const componentPath = resolve(
-        __dirname,
-        "../src/components/CharmDataProvider.tsx",
-      )
-
-      const cannonicalName = dashify(`${newNode.charmSource} ${newNode.name}`)
-      createPage({
-        component: componentPath,
-        path: url,
-        context: {
-          id: newNode.id,
-          required: newNode.requires,
-          cannonicalName,
-        },
-      })
-      // createPageDependancy({ path: componentPath, nodeId: newNode.id })
-
-      type CharmlikeConnection = {
-        name: string
-        charmSource: string
-        path: string
-        cannonicalName: string
-      }
-
-      const charmlikeGenericConnectionData = {
-        path: url,
-        name: newNode.name,
-        cannonicalName,
-        charmSource: newNode.charmSource,
-      }
-
-      const genericCharmlikeConnection: NodeInput & CharmlikeConnection = {
-        ...charmlikeGenericConnectionData,
-        id: createNodeId(`
-          ExaltedCharmlikeConnection
-          Generic
-          ${newNode.charmSource}
-          ${newNode.name}
-        `),
-        internal: {
-          type: `ExaltedCharmlikeConnection`,
-          contentDigest: createContentDigest(charmlikeGenericConnectionData),
-          description: "It does stuff",
-        },
-      }
-
-      createNode(genericCharmlikeConnection)
-      createParentChildLink({
-        //@ts-ignore child is defined as Node when it could be NodeInput
-        parent: newNode,
-        //@ts-ignore child is defined as Node when it could be NodeInput
-        child: genericCharmlikeConnection,
-      })
-
-      const specificCharmlikeConnectionData = {
-        path: url,
-        name: `${newNode.charmSource} ${newNode.name}`,
-        cannonicalName,
-        charmSource: newNode.charmSource,
-      }
-
-      const specificCharmlikeConnection: NodeInput & CharmlikeConnection = {
-        ...specificCharmlikeConnectionData,
-        id: createNodeId(`
-          ExaltedCharmlikeConnection
-          Specific
-          ${newNode.charmSource}
-          ${newNode.name}
-        `),
-        internal: {
-          type: `ExaltedCharmlikeConnection`,
-          contentDigest: createContentDigest(specificCharmlikeConnectionData),
-          description: "It does stuff",
-        },
-      }
-
-      createNode(specificCharmlikeConnection)
-      //@ts-ignore child is defined as Node when it could be NodeInput
-      createParentChildLink({
-        //@ts-ignore child is defined as Node when it could be NodeInput
-        parent: newNode,
-        //@ts-ignore child is defined as Node when it could be NodeInput
-        child: specificCharmlikeConnection,
-      })
-
-      console.log(`Made ${url} from ${fileNode.relativePath}`)
-      console.log(
-        `   Generic connection id: ${genericCharmlikeConnection.id} ${genericCharmlikeConnection.cannonicalName}`,
-      )
-      console.log(
-        `  Specific connection id: ${specificCharmlikeConnection.id} ${genericCharmlikeConnection.cannonicalName}`,
-      )
-
+      makeRequirementLinks(newNode, props)
+      makeFriendlyLinks(newNode, props)
       return
     default:
       reporter.error(errorMessage(fileNode, "content", types))
   }
+}
+
+const makeIndividualCharmPages = async (
+  args: CreatePagesArgs,
+  themeOptions?: PluginOptions,
+) => {
+  const { actions, graphql } = args
+  const { createPage } = actions
+
+  const { errors, data } = await graphql(`
+    {
+      allExaltedCharm {
+        nodes {
+          id
+          url
+          name
+          requires
+          charmSource
+        }
+      }
+    }
+  `)
+
+  if (errors) {
+    throw errors
+  }
+
+  for (const node of data.allExaltedCharm.nodes) {
+    createPage({
+      path: node.url,
+      component: splatCharmPageComponent,
+      context: {
+        id: node.id,
+        charmSource: node.charmSource,
+        requires: node.requires || [],
+        names: [node.name, `${node.charmSource} ${node.name}`],
+      },
+    })
+  }
+
+  return
+}
+
+const simpleGraphql = async (
+  graphql: (query: string) => any,
+  query: string,
+) => {
+  const { errors, data } = await graphql(query)
+  if (errors) {
+    throw errors
+  }
+  return data
+}
+
+const makeSplatPages = async (
+  args: CreatePagesArgs,
+  themeOptions?: PluginOptions,
+) => {
+  const { actions, graphql } = args
+  const { createPage } = actions
+
+  const splatListing = await simpleGraphql(
+    graphql,
+    `
+    {
+      allExaltedCharm(filter: { charmType: { eq: splat } }) {
+        distinct(field: charmSource)
+      }
+    }
+  `,
+  )
+
+  for (const splat of splatListing.allExaltedCharm.distinct) {
+    createPage({
+      path: pathify(splat),
+      component: splatPageComponent,
+      context: {
+        splat,
+      },
+    })
+
+    const traitListing = await simpleGraphql(
+      graphql,
+      `
+      {
+        allExaltedCharm(
+          filter: {
+            charmType: {eq: splat},
+            charmSource: {eq: "${splat}"},
+          }
+        ) {
+          distinct(field: trait)
+        }
+      }
+    `,
+    )
+
+    for (const trait of traitListing.allExaltedCharm.distinct) {
+      createPage({
+        path: pathify(splat, trait),
+        component: splatTraitPageComponent,
+        context: {
+          splat,
+          trait,
+        },
+      })
+    }
+  }
+
+  return
+}
+export const makeCharmPages = async (
+  args: CreatePagesArgs,
+  themeOptions?: PluginOptions,
+) => {
+  return Promise.all([
+    makeIndividualCharmPages(args, themeOptions),
+    makeSplatPages(args, themeOptions),
+  ])
 }

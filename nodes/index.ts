@@ -1,8 +1,15 @@
-import { CreateNodeArgs, PluginOptions, Node } from "gatsby"
+import { CreateNodeArgs, PluginOptions, CreatePagesArgs } from "gatsby"
 import { FileNode, getSourceInstanceName } from "@ludobrew/core/gatsbyNodeTools"
 import { makePageNode } from "./Pages"
-import { makeCharmNode } from "./Charm"
-import { contentDirectories, pluginId } from "../src/data";
+import { makeCharmNode, makeCharmPages } from "./Charm"
+import { contentDirectories, pluginId } from "./data"
+
+export const createNodePages = async (
+  args: CreatePagesArgs,
+  themeOptions?: PluginOptions,
+) => {
+  await makeCharmPages(args, themeOptions)
+}
 
 export const handleMDXNode = async (
   props: CreateNodeArgs,

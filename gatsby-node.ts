@@ -3,8 +3,8 @@ import {
   CreateSchemaCustomizationArgs,
   PluginOptions,
 } from "gatsby"
-import { contentDirectories, pluginId, ThemeOptions } from "./src/data"
-import { handleMDXNode } from "./nodes"
+import { contentDirectories, pluginId, ThemeOptions } from "./nodes/data"
+import { handleMDXNode, createNodePages } from "./nodes"
 import { createDirectories } from "@ludobrew/core/file"
 
 const api: GatsbyNode = {
@@ -29,6 +29,11 @@ const api: GatsbyNode = {
     }
   },
 
+  createPages: async (props, themeOptions) => {
+    await createNodePages(props, themeOptions)
+    return
+  },
+
   createSchemaCustomization: async (
     props: CreateSchemaCustomizationArgs,
     themeOptions: ThemeOptions & PluginOptions,
@@ -48,6 +53,81 @@ const api: GatsbyNode = {
       interface Charmlike @nodeInterface {
 
         id: ID!
+
+        """
+        Where it is
+        """
+        url: String!
+
+        """
+        Type of thing
+        """
+        charmType: CharmType
+
+        """
+        Like [Solar], [Crazy Teacup], [Bats in the Belfry Style], [Jam Commissioner Ogwan]
+        """
+        charmSource: String
+
+        """
+        Like for determining "Orator" or "Power" craft charms
+        """
+        category: String
+
+        """
+        Name of charm
+        """
+        name: String
+
+        """
+        Essence prerequisite
+        """
+        essence: Int
+
+        """
+        Simple/Uniform and all that
+        """
+        type: String
+
+        """
+        Mote costs
+        """
+        cost: String
+
+        """
+        Scene/Instant and all that
+        """
+        duration: String
+
+        """
+        List of charms to do
+        """
+        requires: [String]
+
+        """
+        Like "social" or whatever.
+        """
+        tags: [String]
+
+        """
+        Uniform/Decisive-only and all that
+        """
+        keywords: [String]
+
+        """
+        The "lowdown" synopsis of a charm
+        """
+        shortDescription: String
+      }
+
+      type ExaltedCharm implements Node & Charmlike {
+
+        id: ID!
+
+        """
+        Where it is
+        """
+        url: String!
 
         """
         Type of thing
@@ -128,7 +208,7 @@ const api: GatsbyNode = {
   },
 }
 
-// export const createPages = api.createPages
+export const createPages = api.createPages
 // export const createPagesStatefully = api.createPagesStatefully
 // export const createResolvers = api.createResolvers
 export const createSchemaCustomization = api.createSchemaCustomization
