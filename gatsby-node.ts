@@ -110,9 +110,19 @@ const api: GatsbyNode = {
         shortDescription: String
       }
 
-      type ExaltedCharm implements Node & Charmlike @childOf(Mdx)
-      type ExaltedCharmlikeConnection implements Node
+      type FriendlyLinkToExaltedCharmlike implements Node {
+        id: ID!
+        friendlyName: String!
+        path: String!
+        charmSource: String!
+      }
 
+      type RequirementLinkToExaltedCharmlike implements Node {
+        id: ID!
+        requirement: String!
+        path: String!
+        charmSource: String!
+      }
     `
     createTypes(typeDefs)
   },
