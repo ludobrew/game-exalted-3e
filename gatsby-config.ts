@@ -1,4 +1,4 @@
-import { contentDirectories, pluginId } from "./src/data"
+import { contentDirectories, pluginId } from "./nodes/data"
 import { generateSourceFilesystemPlugins } from "@ludobrew/core/file"
 import { resolve } from "path"
 
