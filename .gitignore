@@ -1,4 +1,7 @@
 *.js
 *.map
 *.tsbuildinfo
+gatsby-*.d.ts
+src/**/*.d.ts
+nodes/**/*.d.ts
 node_modules
