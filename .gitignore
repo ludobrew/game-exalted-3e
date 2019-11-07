@@ -5,3 +5,5 @@ gatsby-*.d.ts
 src/**/*.d.ts
 nodes/**/*.d.ts
 node_modules
+/*.d.ts
+!/Modules.d.ts
