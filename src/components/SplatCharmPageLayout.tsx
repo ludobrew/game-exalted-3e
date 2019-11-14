@@ -6,19 +6,7 @@ import { Charm } from "../../nodes/Charm/Charm"
 import { TraitRequirement } from "./Charm/CharmData"
 import { MDXRenderer } from "gatsby-plugin-mdx"
 import Layout from "./Layout"
-import { StyledLink } from "./Common"
-
-function* intersperse(iterable: Iterable<any>, separator: any) {
-  let first = true
-  for (const item of iterable) {
-    if (!first) {
-      yield separator
-    }
-    first = false
-    yield item
-  }
-  return
-}
+import { intersperse } from "../lib"
 
 type RequirementLinkProps = {
   charmlike: Charmlike
