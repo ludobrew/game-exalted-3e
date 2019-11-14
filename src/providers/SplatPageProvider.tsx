@@ -12,44 +12,15 @@ export default SplatPageProvider
 
 export const query = graphql`
   query SplatPageProvider($splat: String) {
-    allExaltedCharm(filter: { charmSource: { eq: $splat } }) {
-      traits: distinct(field: trait)
+    # allExaltedCharm(filter: { charmSource: { eq: $splat } }) {
+    #   traits: distinct(field: trait)
+    # }
+
+    traitList: allExaltedCharm(filter: { charmSource: { eq: $splat } }) {
+      traits: group(field: trait) {
+        name: fieldValue
+        count: totalCount
+      }
     }
   }
 `
-
-// export const query = graphql`
-//   query($charmSource: String) {
-//     universal: allExaltedCharm(
-//       filter: {
-//         charmType: { eq: splat }
-//         charmSource: { eq: $charmSource }
-//         trait: { eq: "Universal" }
-//       }
-//       sort: { fields: [category, essence, rating, name] }
-//     ) {
-//       group(field: trait) {
-//         charms: nodes {
-//           ...SplatCharmPageTagline
-//         }
-//         trait: fieldValue
-//       }
-//     }
-
-//     other: allExaltedCharm(
-//       filter: {
-//         charmType: { eq: splat }
-//         charmSource: { eq: $charmSource }
-//         trait: { ne: "Universal" }
-//       }
-//       sort: { fields: [category, essence, rating, name] }
-//     ) {
-//       group(field: trait) {
-//         charms: nodes {
-//           ...SplatCharmPageTagline
-//         }
-//         trait: fieldValue
-//       }
-//     }
-//   }
-// `
