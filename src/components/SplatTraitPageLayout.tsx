@@ -6,6 +6,7 @@ import { MDXRenderer } from "gatsby-plugin-mdx"
 import { Charm } from "../../nodes/Charm"
 import { CharmTagline } from "./Charm/CharmData"
 import Layout from "./Layout"
+import { BreadCrumbBar } from "./Common"
 
 export const fragments = graphql`
   fragment SplatCharmPageTagline on ExaltedCharm {
@@ -51,7 +52,7 @@ const SplatTraitPageLayout: React.FC<any> = ({ data, pageContext }) => {
   const { trait, splat } = pageContext
   return (
     <Layout>
-
+      <BreadCrumbBar to={[splat]} />
       <Styled.h1>{trait}</Styled.h1>
       {preface ? <MDXRenderer>{preface.body}</MDXRenderer> : null}
       {charmTrees.trees.map(tree => (

@@ -6,6 +6,7 @@ import { Charm } from "../../nodes/Charm/Charm"
 import { TraitRequirement } from "./Charm/CharmData"
 import { MDXRenderer } from "gatsby-plugin-mdx"
 import Layout from "./Layout"
+import { StyledLink, BreadCrumbBar } from "./Common"
 import { intersperse } from "../lib"
 
 type RequirementLinkProps = {
@@ -120,6 +121,7 @@ const SplatCharmPageLayout: React.FC<any> = ({ data, pageContext }) => {
 
   return (
     <Layout>
+      <BreadCrumbBar to={[charm.splat, charm.trait]} />
       <Styled.h1>{charm.name}</Styled.h1>
       <Styled.ul>
         <Styled.li>
