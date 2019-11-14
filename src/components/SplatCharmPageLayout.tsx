@@ -76,6 +76,10 @@ const RequirementsLine: React.FC<{
   requiresData: RequiresData
   separator?: string
 }> = ({ charmlike, requiresData, separator = ", " }) => {
+  if (!charmlike.requires) {
+    return null
+  }
+
   const results = (charmlike.requires || []).map(rawRequirement => {
     // If we matched the requirement
     if (requiresData.found.indexOf(rawRequirement) >= 0) {
@@ -113,7 +117,12 @@ const RequirementsLine: React.FC<{
     }
   })
 
-  return <React.Fragment>{[...intersperse(results, separator)]}</React.Fragment>
+  return (
+    <Styled.li>
+      <Styled.p as={"span"}>Requires: </Styled.p>
+      {[...intersperse(results, separator)]}
+    </Styled.li>
+  )
 }
 
 const SplatCharmPageLayout: React.FC<any> = ({ data, pageContext }) => {
@@ -127,10 +136,7 @@ const SplatCharmPageLayout: React.FC<any> = ({ data, pageContext }) => {
         <Styled.li>
           <TraitRequirement linkTrait charm={charm} />
         </Styled.li>
-        <Styled.li>
-          <Styled.p as={"span"}>Requires: </Styled.p>
-          <RequirementsLine charmlike={charm} requiresData={requires} />{" "}
-        </Styled.li>
+        <RequirementsLine charmlike={charm} requiresData={requires} />{" "}
       </Styled.ul>
       <MDXRenderer>{charm.mdx.body}</MDXRenderer>
       <BuildsToLine requiredForData={requiredForInSplat} />
