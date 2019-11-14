@@ -15,7 +15,7 @@ type BreadCrumbBarProps = {
 
 export const BreadCrumbBar = ({ to = [] }: BreadCrumbBarProps) => {
   const links = to.map((item, index, array) => (
-    <StyledLink key={item} to={pathify(gameId, ...array.slice(0, index))}>
+    <StyledLink key={item} to={pathify(gameId, ...array.slice(0, index + 1))}>
       {item}
     </StyledLink>
   ))
