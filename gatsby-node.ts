@@ -2,19 +2,32 @@ import {
   GatsbyNode,
   CreateSchemaCustomizationArgs,
   PluginOptions,
+  SourceNodesArgs,
 } from "gatsby"
 import { contentDirectories, pluginId, ThemeOptions } from "./nodes/data"
 import { handleMDXNode, createNodePages } from "./nodes"
 import { createDirectories } from "@ludobrew/core/file"
+import { createLudobrewEntry } from "@ludobrew/core/gatsbyNodeTools"
+import { gameId, gameName, gameShortName, gameDescription } from "./data.json"
 
 const api: GatsbyNode = {
   onPreBootstrap: async (props, options) => {
     await createDirectories({
       props,
       options,
-      pluginId,
+      pluginId: gameId,
       pluginDirectory: __dirname,
       contentDirectories,
+    })
+  },
+
+  // TODO: something funky with this typedef
+  sourceNodes: async (props: SourceNodesArgs, themeOptions: PluginOptions) => {
+    createLudobrewEntry(props, {
+      gameId,
+      gameName,
+      gameShortName,
+      gameDescription,
     })
   },
 
@@ -227,4 +240,4 @@ export const onPreBootstrap = api.onPreBootstrap
 // export const preprocessSource = api.preprocessSource
 // export const resolvableExtensions = api.resolvableExtensions
 // export const setFieldsOnGraphQLNodeType = api.setFieldsOnGraphQLNodeType
-// export const sourceNodes = api.sourceNodes
+export const sourceNodes = api.sourceNodes

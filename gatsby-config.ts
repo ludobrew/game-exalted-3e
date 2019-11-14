@@ -1,4 +1,5 @@
-import { contentDirectories, pluginId } from "./nodes/data"
+import { contentDirectories } from "./nodes/data"
+import { gameId } from "./data.json"
 import { generateSourceFilesystemPlugins } from "@ludobrew/core/file"
 import { resolve } from "path"
 
@@ -8,7 +9,7 @@ module.exports = (themeOptions: any) => {
       ...generateSourceFilesystemPlugins({
         currentDir: resolve("."),
         contentDirectories,
-        pluginId,
+        pluginId: gameId,
       }),
       "@ludobrew/core",
     ],

@@ -102,6 +102,21 @@ type RequirementLinkToCharmlike = {
   charmSource: string
 }
 
+export const makeCharmlikeNode = (
+  props: CreateNodeArgs,
+  newNode: NodeInput & Charmlike,
+  parentNode: NodeInput,
+) => {
+  const { actions } = props
+  const { createNode, createParentChildLink } = actions
+  createNode(newNode)
+
+  //@ts-ignore child is defined as Node when it could be NodeInput
+  createParentChildLink({ parent: parentNode, child: newNode })
+  makeRequirementLinks(newNode, props)
+  makeFriendlyLinks(newNode, props)
+}
+
 export const makeRequirementLinks = (
   node: NodeInput & Charmlike,
   props: CreateNodeArgs,

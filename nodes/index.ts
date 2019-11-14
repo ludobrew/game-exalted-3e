@@ -1,14 +1,39 @@
 import { CreateNodeArgs, PluginOptions, CreatePagesArgs } from "gatsby"
 import { FileNode, getSourceInstanceName } from "@ludobrew/core/gatsbyNodeTools"
-import { makePageNode } from "./Pages"
-import { makeCharmNode, makeCharmPages } from "./Charm"
-import { contentDirectories, pluginId } from "./data"
+import { contentDirectories } from "./data"
+import path from "path"
+import glob from "glob"
+import { makeCharmNode } from "./Charm/Charm"
+import { gameId } from "../data.json"
+
+const asyncGlob = (pattern: string, options?: glob.IOptions) => {
+  return new Promise<string[]>((resolve, reject) => {
+    glob(pattern, options || {}, (err, matches) => {
+      if (err) reject(err)
+      resolve(matches)
+    })
+  })
+}
+
+const pagesGlob = path
+  .resolve(path.join(__dirname, "**", "Pages.js")) // This is pages.js because ts compiled it
+  .replace(/\\/g, "/")
 
 export const createNodePages = async (
   args: CreatePagesArgs,
   themeOptions?: PluginOptions,
 ) => {
-  await makeCharmPages(args, themeOptions)
+  const pageMatches = await asyncGlob(pagesGlob)
+  console.log(__dirname, pagesGlob, pageMatches)
+  await Promise.all(
+    pageMatches
+      .map(require)
+      .map((fn: { makePages?: typeof createNodePages }) => {
+        if (fn.makePages) {
+          return fn.makePages(args, themeOptions)
+        }
+      }),
+  )
 }
 
 export const handleMDXNode = async (
@@ -20,7 +45,7 @@ export const handleMDXNode = async (
 
   const mySourceInstanceName = getSourceInstanceName(
     contentDirectories,
-    pluginId,
+    gameId,
     fileNode,
   )
 

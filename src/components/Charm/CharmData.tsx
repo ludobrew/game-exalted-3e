@@ -1,10 +1,12 @@
 /** @jsx jsx */
-import { jsx } from "@emotion/core"
+import { jsx, Styled } from "theme-ui"
 import React from "react"
-import { Charm } from "../../../nodes/Charm"
-import { Link, graphql } from "gatsby"
+import { Charm } from "../../../nodes/Charm/Charm"
+import { Link, graphql, GatsbyLinkProps } from "gatsby"
 import { Charmlike } from "../../../nodes/Charmlike"
 import { pathify } from "@ludobrew/core/gatsbyNodeTools"
+import { gameId } from "../../../data.json"
+import { StyledLink } from "../Common"
 
 export const fragments = graphql`
   fragment CharmLink on Charmlike {
@@ -18,10 +20,10 @@ type GenericCharmFunction = React.FC<{ charm: Charmlike }>
 type CharmFunction = React.FC<{ charm: Charm }>
 
 export const CharmLink: GenericCharmFunction = ({ charm }) => (
-  <Link to={charm.url}>{charm.name}</Link>
+  <StyledLink to={charm.url}>{charm.name}</StyledLink>
 )
 export const EssenceRequirement: GenericCharmFunction = ({ charm }) => (
-  <React.Fragment>Essence {charm.essence}</React.Fragment>
+  <Styled.p as={"span"}>Essence {charm.essence}</Styled.p>
 )
 
 export const TraitRequirement: React.FC<{
@@ -30,7 +32,9 @@ export const TraitRequirement: React.FC<{
 }> = ({ charm, linkTrait = false }) => (
   <React.Fragment>
     {linkTrait ? (
-      <Link to={pathify(charm.charmSource, charm.trait)}>{charm.trait}</Link>
+      <StyledLink to={pathify(gameId, charm.charmSource, charm.trait)}>
+        {charm.trait}
+      </StyledLink>
     ) : (
       charm.trait
     )}{" "}
@@ -39,7 +43,13 @@ export const TraitRequirement: React.FC<{
 )
 
 export const TraitCategoryLink: CharmFunction = ({ charm }) => (
-  <Link to={pathify(charm.charmSource, charm.trait)}>{charm.trait}</Link>
+  <StyledLink to={pathify(gameId, charm.charmSource, charm.trait)}>
+    {charm.trait}
+  </StyledLink>
+)
+
+export const SplatLink: React.FC<{ splat: string }> = ({ splat }) => (
+  <StyledLink to={pathify(gameId, splat)}>{splat}</StyledLink>
 )
 
 export const CharmDiscription: GenericCharmFunction = ({ charm }) => (
@@ -52,11 +62,11 @@ export const CharmTagline: React.FC<{
   charm: Charm
   linkTrait?: boolean
 }> = ({ charm, linkTrait = false }) => (
-  <span key={charm.name}>
+  <Styled.p as={"span"} key={charm.name}>
     <EssenceRequirement charm={charm} />,{" "}
     <TraitRequirement linkTrait={linkTrait} charm={charm} />
     {" - "}
     <CharmLink charm={charm} />
     {charm.shortDescription ? ` - ${charm.shortDescription}` : null}
-  </span>
+  </Styled.p>
 )

@@ -46,6 +46,12 @@ export const query = graphql`
       splat
 
       requires
+
+      mdx: parent {
+        ... on Mdx {
+          body
+        }
+      }
     }
 
     requiredForInSplat: allRequirementLinkToExaltedCharmlike(
@@ -78,6 +84,7 @@ export const query = graphql`
         ...RequirementLinkData
       }
     }
+
     requires: allFriendlyLinkToExaltedCharmlike(
       filter: { friendlyName: { in: $requires } }
     ) {

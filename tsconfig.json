@@ -20,6 +20,7 @@
     ]
   },
   "include": [
+    "*.json",
     "Modules.d.ts",
     "gatsby-*.ts",
     "nodes"

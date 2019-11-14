@@ -4,10 +4,10 @@
     "access": "public"
   },
   "version": "1.0.0",
-  "description": "LudoBrew core dependancies",
+  "description": "Game plugin for Exalted 3rd Edition for Ludobrew",
   "author": "Aaron Haaf",
   "repository": {
-    "url": "https://github.com/ludobrew/core",
+    "url": "https://github.com/ludobrew/game-exalted-3e",
     "type": "git"
   },
   "files": [
@@ -23,10 +23,11 @@
     "watch": "tsc -w",
     "build": "tsc"
   },
+  "peerDependencies": {
+    "@ludobrew/core": "*"
+  },
   "devDependencies": {
-    "@ludobrew/core": "*",
-    "@types/dashify": "1.0.0",
-    "dashify": "2.0.0",
-    "gatsby-plugin-typescript": "2.1.11"
+    "@types/glob": "7.1.1",
+    "glob": "7.1.6"
   }
 }

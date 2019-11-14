@@ -1,11 +1,12 @@
 /** @jsx jsx */
-import { jsx } from "@emotion/core"
+import { jsx, Styled } from "theme-ui"
 import React from "react"
-import { Link } from "gatsby"
 import { Charmlike } from "../../nodes/Charmlike"
-import { Charm } from "../../nodes/Charm"
-import { pathify } from "@ludobrew/core/gatsbyNodeTools"
+import { Charm } from "../../nodes/Charm/Charm"
 import { TraitRequirement } from "./Charm/CharmData"
+import { MDXRenderer } from "gatsby-plugin-mdx"
+import Layout from "./Layout"
+import { StyledLink } from "./Common"
 
 function* intersperse(iterable: Iterable<any>, separator: any) {
   let first = true
@@ -19,8 +20,12 @@ function* intersperse(iterable: Iterable<any>, separator: any) {
   return
 }
 
-const RequirementLink: React.FC<{ charmlike: Charmlike }> = ({ charmlike }) => {
-  return <Link to={charmlike.url}>{charmlike.name}</Link>
+type RequirementLinkProps = {
+  charmlike: Charmlike
+}
+
+const RequirementLink = ({ charmlike }: RequirementLinkProps) => {
+  return <StyledLink to={charmlike.url}>{charmlike.name}</StyledLink>
 }
 
 type RequiresData = {
@@ -49,31 +54,31 @@ const BuildsToLine: React.FC<{
   }
 
   return (
-    <>
-      <h2>Required for:</h2>
+    <React.Fragment>
+      <Styled.h2>Required for:</Styled.h2>
       {requiredForData.group.map(group => (
         <React.Fragment key={group.fieldValue}>
-          <h3>
+          <Styled.h3>
             {group.totalCount} {group.fieldValue} charm
             {group.totalCount > 1 ? "s" : ""}
-          </h3>
-          <ul>
+          </Styled.h3>
+          <Styled.ul>
             {group.links.map(({ charmlike }) => {
               return (
-                <li key={charmlike.name}>
+                <Styled.li key={charmlike.name}>
                   Essence {charmlike.essence},{" "}
                   {(charmlike as Charm).trait
                     ? `${(charmlike as Charm).trait} ${(charmlike as Charm)
                         .rating || 1}`
                     : ""}
                   : <RequirementLink charmlike={charmlike} />
-                </li>
+                </Styled.li>
               )
             })}
-          </ul>
+          </Styled.ul>
         </React.Fragment>
       ))}
-    </>
+    </React.Fragment>
   )
 }
 
@@ -122,23 +127,25 @@ const RequirementsLine: React.FC<{
   return <React.Fragment>{[...intersperse(results, separator)]}</React.Fragment>
 }
 
-const SplatCharmPageLayout: React.FC<any> = ({ data }) => {
+const SplatCharmPageLayout: React.FC<any> = ({ data, pageContext }) => {
   const { charm, requires, requiredForInSplat, requiredForOther } = data
+
   return (
-    <div>
-      <h1>{charm.name}</h1>
-      <ul>
-        <li>
+    <Layout>
+      <Styled.h1>{charm.name}</Styled.h1>
+      <Styled.ul>
+        <Styled.li>
           <TraitRequirement linkTrait charm={charm} />
-        </li>
-        <li>
-          Requires:{" "}
+        </Styled.li>
+        <Styled.li>
+          <Styled.p as={"span"}>Requires: </Styled.p>
           <RequirementsLine charmlike={charm} requiresData={requires} />{" "}
-        </li>
-      </ul>
+        </Styled.li>
+      </Styled.ul>
+      <MDXRenderer>{charm.mdx.body}</MDXRenderer>
       <BuildsToLine requiredForData={requiredForInSplat} />
       <BuildsToLine requiredForData={requiredForOther} />
-    </div>
+    </Layout>
   )
 }
 

@@ -1,10 +1,11 @@
 /** @jsx jsx */
-import { jsx } from "@emotion/core"
+import { jsx, Styled } from "theme-ui"
 import React from "react"
 import { graphql } from "gatsby"
 import { groupBy } from "lodash"
 import { Charm } from "../../nodes/Charm"
 import { CharmTagline, CharmLink } from "./Charm/CharmData"
+import Layout from "./Layout"
 
 export const fragments = graphql`
   fragment SplatCharmPageTagline on ExaltedCharm {
@@ -58,19 +59,18 @@ const SplatTraitPageLayout: React.FC<any> = ({ data, pageContext }) => {
   const { trait, splat } = pageContext
 
   return (
-    <div>
-      <h1>
+    <Layout>
+      <Styled.h1>
         {splat} {trait}
-      </h1>
-      <ul>
+      </Styled.h1>
+      <Styled.ul>
         {allExaltedCharm.charms.map(charm => (
-          <li key={charm.name}>
+          <Styled.li key={charm.name}>
             <CharmTagline charm={charm} />
-          </li>
+          </Styled.li>
         ))}
-      </ul>
-      <div> Hello SplatTraitPageLayout </div>
-    </div>
+      </Styled.ul>
+    </Layout>
   )
 }
 
