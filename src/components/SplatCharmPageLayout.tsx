@@ -136,7 +136,7 @@ const SplatCharmPageLayout: React.FC<any> = ({ data, pageContext }) => {
         <Styled.li>
           <TraitRequirement linkTrait charm={charm} />
         </Styled.li>
-        <RequirementsLine charmlike={charm} requiresData={requires} />{" "}
+        <RequirementsLine charmlike={charm} requiresData={requires} />
       </Styled.ul>
       <MDXRenderer>{charm.mdx.body}</MDXRenderer>
       <BuildsToLine requiredForData={requiredForInSplat} />
