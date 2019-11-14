@@ -2,9 +2,9 @@
 import { jsx, Styled } from "theme-ui"
 import React from "react"
 import { graphql } from "gatsby"
-import { groupBy } from "lodash"
+import { MDXRenderer } from "gatsby-plugin-mdx"
 import { Charm } from "../../nodes/Charm"
-import { CharmTagline, CharmLink } from "./Charm/CharmData"
+import { CharmTagline } from "./Charm/CharmData"
 import Layout from "./Layout"
 
 export const fragments = graphql`
@@ -19,57 +19,49 @@ export const fragments = graphql`
   }
 `
 
-const toCategoryGroups = charms =>
-  groupBy(charms, charm => (charm.category === null ? "none" : charm.category))
+type CharmListProps = {
+  charms: Charm[]
+}
 
-const ListGroup: React.FC<{ header?: string; charms: Charm[] }> = ({
-  header,
-  charms,
-}) => (
-  <>
-    {header ? <h3>{header}</h3> : null}
-    <ul key={header || "none"}>
-      {charms.map(charm => (
-        <li>
-          <CharmTagline charm={charm} />
-        </li>
-      ))}
-    </ul>
-  </>
-)
+const CharmList = ({ charms }: CharmListProps) => {
+  const liArray = charms.map(charm => (
+    <Styled.li key={charm.name}>
+      <CharmTagline charm={charm} />
+    </Styled.li>
+  ))
+  return <Styled.ul>{liArray}</Styled.ul>
+}
 
-const categoryGroupToTaglines = categoryGroup => {
-  const { none, ...other } = categoryGroup
+type TreeDisplayProps = {
+  treeName: string
+  charms: Charm[]
+}
 
-  const results = []
-
-  if (none) {
-    results.push(<ListGroup charms={none.charms} />)
-  }
-
-  for (const category in other) {
-    results.push(<ListGroup header={category} charms={other[category]} />)
-  }
-
-  return results
+const TreeDisplay = ({ treeName, charms }: TreeDisplayProps) => {
+  return (
+    <React.Fragment key={treeName}>
+      <Styled.h2>{treeName}</Styled.h2>
+      <CharmList charms={charms} />
+    </React.Fragment>
+  )
 }
 
 const SplatTraitPageLayout: React.FC<any> = ({ data, pageContext }) => {
-  const { allExaltedCharm } = data
+  const { noTreeCharms, charmTrees, preface } = data
   const { trait, splat } = pageContext
-
   return (
     <Layout>
-      <Styled.h1>
-        {splat} {trait}
-      </Styled.h1>
-      <Styled.ul>
-        {allExaltedCharm.charms.map(charm => (
-          <Styled.li key={charm.name}>
-            <CharmTagline charm={charm} />
-          </Styled.li>
-        ))}
-      </Styled.ul>
+
+      <Styled.h1>{trait}</Styled.h1>
+      {preface ? <MDXRenderer>{preface.body}</MDXRenderer> : null}
+      {charmTrees.trees.map(tree => (
+        <TreeDisplay key={tree.treeName} {...tree} />
+      ))}
+      <TreeDisplay
+        key={"OtherTree"}
+        charms={noTreeCharms.charms}
+        treeName="Other"
+      />
     </Layout>
   )
 }
