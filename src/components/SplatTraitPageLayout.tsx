@@ -39,6 +39,10 @@ type TreeDisplayProps = {
 }
 
 const TreeDisplay = ({ treeName, charms }: TreeDisplayProps) => {
+  if (charms.length === 0) {
+    return null
+  }
+
   return (
     <React.Fragment key={treeName}>
       <Styled.h2>{treeName}</Styled.h2>
