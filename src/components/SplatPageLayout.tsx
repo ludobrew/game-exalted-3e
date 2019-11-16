@@ -17,7 +17,8 @@ const SplatPageLayout: React.FC<any> = ({ data, pageContext }) => {
   return (
     <Layout>
       <BreadCrumbBar />
-      <Styled.h1>{splat} Charms</Styled.h1>
+      <Styled.h1>{splat}</Styled.h1>
+      <Styled.h2>Charms</Styled.h2>
       <Styled.ul>
         {traitList.traits
           .sort((a, b) => traitOrder(a.name, b.name))
