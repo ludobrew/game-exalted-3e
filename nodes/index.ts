@@ -16,7 +16,7 @@ const asyncGlob = (pattern: string, options?: glob.IOptions) => {
 }
 
 const pagesGlob = path
-  .resolve(path.join(__dirname, "**", "Pages.js")) // This is pages.js because ts compiled it
+  .resolve(path.join(__dirname, "**", "Pages.ts"))
   .replace(/\\/g, "/")
 
 export const createNodePages = async (
@@ -24,7 +24,7 @@ export const createNodePages = async (
   themeOptions?: PluginOptions,
 ) => {
   const pageMatches = await asyncGlob(pagesGlob)
-  console.log(__dirname, pagesGlob, pageMatches)
+
   await Promise.all(
     pageMatches
       .map(require)

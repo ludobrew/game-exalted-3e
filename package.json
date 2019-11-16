@@ -3,6 +3,7 @@
   "publishConfig": {
     "access": "public"
   },
+  "main": "gatsby-config.js",
   "version": "1.0.0",
   "description": "Game plugin for Exalted 3rd Edition for Ludobrew",
   "author": "Aaron Haaf",

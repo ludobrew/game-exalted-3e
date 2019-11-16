@@ -7,3 +7,5 @@ nodes/**/*.d.ts
 node_modules
 /*.d.ts
 !/Modules.d.ts
+!gatsby-*.js
+!index.js
