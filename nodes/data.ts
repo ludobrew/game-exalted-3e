@@ -39,4 +39,3 @@ export const baseSplats = [
   "Umbral",
 ] as const
 
-export const pluginId = "exalted3e" as const
