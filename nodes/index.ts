@@ -49,9 +49,8 @@ export const handleMDXNode = async (
     fileNode,
   )
 
+  // Probably the wrong way to handle things
   switch (mySourceInstanceName) {
-    case "Pages":
-      break
     case "Artifacts/Armors":
       break
     case "Artifacts/Other":
@@ -67,6 +66,7 @@ export const handleMDXNode = async (
     case "MartialArts":
       break
     case "Splats":
+      makeCharmNode(props, fileNode, options)
       break
 
     default:
