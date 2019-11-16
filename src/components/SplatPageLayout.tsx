@@ -3,7 +3,7 @@ import { jsx, Styled } from "theme-ui"
 
 import React from "react"
 import { pathify } from "@ludobrew/core/gatsbyNodeTools"
-import { gameId } from "../../data.json"
+import { gameId } from "@ludobrew/game-exalted-3e/src/data"
 import Layout from "./Layout"
 import { StyledLink, BreadCrumbBar } from "./Common"
 

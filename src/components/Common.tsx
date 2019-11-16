@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import { jsx, Styled } from "theme-ui"
 import { GatsbyLinkProps, Link } from "gatsby"
-import { gameId, gameShortName } from "../../data.json"
+import { gameId, gameShortName } from "@ludobrew/game-exalted-3e/src/data"
 import { intersperse } from "../lib"
 import { pathify } from "@ludobrew/core/gatsbyNodeTools"
 

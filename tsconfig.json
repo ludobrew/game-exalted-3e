@@ -12,8 +12,10 @@
     "strictNullChecks": true,
     "noImplicitUseStrict": true,
     "resolveJsonModule": true,
+    "noUnusedLocals": true,
+    "noImplicitReturns": true,
+    "noUnusedParameters": true,
     "jsx": "react",
-    "baseUrl": "./src",
     "lib": [
       "dom",
       "scripthost",

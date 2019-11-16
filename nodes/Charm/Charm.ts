@@ -1,20 +1,8 @@
-import {
-  CreateNodeArgs,
-  PluginOptions,
-  Node,
-  NodeInput,
-  CreatePagesArgs,
-} from "gatsby"
-import {
-  Charmlike,
-  CharmlikeNode,
-  makeFriendlyLinks,
-  makeRequirementLinks,
-  makeCharmlikeNode,
-} from "../Charmlike"
+import { CreateNodeArgs, PluginOptions, Node, NodeInput } from "gatsby"
+import { Charmlike, CharmlikeNode, makeCharmlikeNode } from "../Charmlike"
 import { generateFrontmatterCheckers } from "@ludobrew/core/markdown"
 import { FileNode, pathify } from "@ludobrew/core/gatsbyNodeTools"
-import { gameId } from "../../data.json"
+import { gameId } from "@ludobrew/game-exalted-3e/src/data"
 
 export const charmNodeType = "ExaltedCharm" as const
 

@@ -4,7 +4,7 @@ import { contentDirectories } from "./data"
 import path from "path"
 import glob from "glob"
 import { makeCharmNode } from "./Charm/Charm"
-import { gameId } from "../data.json"
+import { gameId } from "@ludobrew/game-exalted-3e/src/data"
 
 const asyncGlob = (pattern: string, options?: glob.IOptions) => {
   return new Promise<string[]>((resolve, reject) => {

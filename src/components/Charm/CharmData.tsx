@@ -1,11 +1,11 @@
 /** @jsx jsx */
-import { jsx, Styled } from "theme-ui"
-import React from "react"
-import { Charm } from "../../../nodes/Charm/Charm"
-import { Link, graphql, GatsbyLinkProps } from "gatsby"
-import { Charmlike } from "../../../nodes/Charmlike"
 import { pathify } from "@ludobrew/core/gatsbyNodeTools"
-import { gameId } from "../../../data.json"
+import { gameId } from "@ludobrew/game-exalted-3e/src/data"
+import { Charm } from "@ludobrew/game-exalted-3e/nodes/Charm/Charm"
+import { Charmlike } from "@ludobrew/game-exalted-3e/nodes/Charmlike"
+import { graphql } from "gatsby"
+import React from "react"
+import { jsx, Styled } from "theme-ui"
 import { StyledLink } from "../Common"
 
 export const fragments = graphql`
@@ -16,14 +16,18 @@ export const fragments = graphql`
   }
 `
 
+type RequiresCharmLike = {
+  charm: Charmlike
+}
+
 type GenericCharmFunction = React.FC<{ charm: Charmlike }>
 type CharmFunction = React.FC<{ charm: Charm }>
 
 export const CharmLink: GenericCharmFunction = ({ charm }) => (
   <StyledLink to={charm.url}>{charm.name}</StyledLink>
 )
-export const EssenceRequirement: GenericCharmFunction = ({ charm }) => (
-  <Styled.p as={"span"}>Essence {charm.essence}</Styled.p>
+export const EssenceRequirement = ({ charm }: RequiresCharmLike) => (
+  <React.Fragment>Essence {charm.essence}</React.Fragment>
 )
 
 export const TraitRequirement: React.FC<{

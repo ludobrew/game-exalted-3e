@@ -1,16 +1,15 @@
 import { GatsbyNode } from "gatsby"
 import { createDirectories } from "@ludobrew/core/file"
-import { gameId, gameName, gameShortName, gameDescription } from "../../data.json"
-import { contentDirectories, pluginId, ThemeOptions } from "../../nodes/data"
-import { resolve } from "path"
+import { gameId } from "@ludobrew/game-exalted-3e/src/data"
+import { contentDirectories } from "@ludobrew/game-exalted-3e/nodes/data"
 
-const extensionPoint: GatsbyNode['onPreBootstrap'] = async (props, options) => {
+const extensionPoint: GatsbyNode["onPreBootstrap"] = async (props, options) => {
   await createDirectories({
     props,
     options,
     pluginId: gameId,
-    pluginDirectory: resolve(__dirname, "..", ".."),
-    contentDirectories
+    pluginDirectory: require.resolve("@ludobrew/game-exalted-3e"),
+    contentDirectories,
   })
   return
 }

@@ -1,21 +1,15 @@
 import { CreatePagesArgs, PluginOptions } from "gatsby"
 import { resolve } from "path"
 import { pathify, simpleGraphql } from "@ludobrew/core/gatsbyNodeTools"
-import { gameId } from "../../data.json"
+import { gameId } from "@ludobrew/game-exalted-3e/src/data"
 
-const splatPageComponent = resolve(
-  __dirname,
-  "../../src/providers/SplatPageProvider.tsx",
+const basePath = "@ludobrew/game-exalted-3e/src/providers"
+const splatPageComponent = require.resolve(`${basePath}/SplatPageProvider`)
+const splatTraitPageComponent = require.resolve(
+  `${basePath}/SplatTraitPageProvider.tsx`,
 )
-
-const splatTraitPageComponent = resolve(
-  __dirname,
-  "../../src/providers/SplatTraitPageProvider.tsx",
-)
-
-const splatCharmPageComponent = resolve(
-  __dirname,
-  "../../src/providers/SplatCharmPageProvider.tsx",
+const splatCharmPageComponent = require.resolve(
+  `${basePath}/SplatCharmPageProvider.tsx`,
 )
 
 const makeIndividualCharmPages = async (
