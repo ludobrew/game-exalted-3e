@@ -1,5 +1,4 @@
 import { CreatePagesArgs, PluginOptions } from "gatsby"
-import { resolve } from "path"
 import { pathify, simpleGraphql } from "@ludobrew/core/gatsbyNodeTools"
 import { gameId } from "@ludobrew/game-exalted-3e/src/data"
 
@@ -14,7 +13,7 @@ const splatCharmPageComponent = require.resolve(
 
 const makeIndividualCharmPages = async (
   args: CreatePagesArgs,
-  themeOptions?: PluginOptions,
+  _themeOptions?: PluginOptions,
 ) => {
   const { actions, graphql } = args
   const { createPage } = actions
@@ -55,7 +54,7 @@ const makeIndividualCharmPages = async (
 
 const makeSplatPages = async (
   args: CreatePagesArgs,
-  themeOptions?: PluginOptions,
+  _themeOptions?: PluginOptions,
 ) => {
   const { actions, graphql } = args
   const { createPage } = actions
