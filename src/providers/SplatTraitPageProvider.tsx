@@ -37,6 +37,7 @@ export const query = graphql`
         trait
         rating
         charmSource
+        shortDescription
       }
     }
 
@@ -53,6 +54,7 @@ export const query = graphql`
           trait
           rating
           charmSource
+          shortDescription
         }
       }
     }
