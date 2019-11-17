@@ -44,6 +44,7 @@ export const query = graphql`
       rating
       trait
       splat
+      tags
 
       requires
 

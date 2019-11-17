@@ -8,6 +8,8 @@ import { MDXRenderer } from "gatsby-plugin-mdx"
 import Layout from "./Layout"
 import { StyledLink, BreadCrumbBar } from "./Common"
 import { intersperse } from "../lib"
+import { gameId } from "../data"
+import { pathify } from "@ludobrew/core/gatsbyNodeTools"
 
 type RequirementLinkProps = {
   charmlike: Charmlike
@@ -125,6 +127,73 @@ const RequirementsLine: React.FC<{
   )
 }
 
+const emdash = "—"
+
+type TagLineProps = {
+  tags?: string[]
+  splat: string
+}
+
+const TagLine = ({ tags = [], splat }: TagLineProps) => {
+  if (!tags || tags.length == 0) {
+    return null
+  }
+
+  // TODO: when I make the pathify(gameId, splat, "tag", tag) path.
+  let tagLine = tags.map(
+    tag =>
+      // <StyledLink key={tag} to={pathify(gameId, splat, "tag", tag)}>
+      tag,
+    // </StyledLink>
+  )
+  // TODO: figureout intersperse typing
+  tagLine = intersperse(tagLine, ", ") as any
+  return <Styled.li>Tags: {Array(...tagLine)}</Styled.li>
+}
+
+type InfoBlobProps = {
+  charm: Charm
+  requiresData: any
+}
+
+const InfoBlob = ({ charm, requiresData }: InfoBlobProps) => {
+  const { cost, type, keywords, duration, essence, tags, splat } = charm
+
+  let keywordBlob: any[] = ["None"]
+
+  if (keywords) {
+    if (Array.isArray(keywords) && keywords.length > 0) {
+      // TODO: when I make the pathify(gameId, splat, "keyword", keyword) path.
+      keywordBlob = keywords.map(
+        keyword =>
+          // <StyledLink
+          //   key={keyword}
+          //   to={pathify(gameId, splat, "keyword", keyword)}
+          // >
+          keyword,
+        // </StyledLink>
+      )
+      keywordBlob = Array(intersperse(keywordBlob, ", "))
+    } else {
+      keywordBlob = [keywords]
+    }
+  }
+
+  return (
+    <Styled.ul>
+      <Styled.li>
+        Cost: {cost || emdash}; Mins:{" "}
+        <TraitRequirement linkTrait charm={charm} />, Essence {essence}
+      </Styled.li>
+      <Styled.li>Type: {type || "Simple"}</Styled.li>
+      <Styled.li>Keywords: {keywordBlob}</Styled.li>
+      <Styled.li>Duration: {duration ? duration : "Instant"}</Styled.li>
+      <TagLine tags={tags} splat={splat} />
+      <RequirementsLine charmlike={charm} requiresData={requiresData} />
+    </Styled.ul>
+  )
+}
+
 const SplatCharmPageLayout: React.FC<any> = ({ data, pageContext }) => {
   const { charm, requires, requiredForInSplat, requiredForOther } = data
 
@@ -132,12 +201,7 @@ const SplatCharmPageLayout: React.FC<any> = ({ data, pageContext }) => {
     <Layout>
       <BreadCrumbBar to={[charm.splat, charm.trait]} />
       <Styled.h1>{charm.name}</Styled.h1>
-      <Styled.ul>
-        <Styled.li>
-          <TraitRequirement linkTrait charm={charm} />
-        </Styled.li>
-        <RequirementsLine charmlike={charm} requiresData={requires} />
-      </Styled.ul>
+      <InfoBlob charm={charm} requiresData={requires} />
       <MDXRenderer>{charm.mdx.body}</MDXRenderer>
       <BuildsToLine requiredForData={requiredForInSplat} />
       <BuildsToLine requiredForData={requiredForOther} />
