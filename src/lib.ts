@@ -1,11 +1,11 @@
-export function* intersperse(iterable: Iterable<any>, separator: any) {
+export function* intersperse<A, B>(iterable: Iterable<A>, separator: B) {
   let first = true
   for (const item of iterable) {
     if (!first) {
-      yield separator
+      yield separator as B
     }
     first = false
-    yield item
+    yield item as A
   }
   return
 }
