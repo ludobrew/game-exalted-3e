@@ -8,7 +8,7 @@ const extensionPoint: GatsbyNode["onPreBootstrap"] = async (props, options) => {
     props,
     options,
     pluginId: gameId,
-    pluginDirectory: require.resolve("@ludobrew/game-exalted-3e"),
+    pluginPackageName: "@ludobrew/game-exalted-3e",
     contentDirectories,
   })
   return
