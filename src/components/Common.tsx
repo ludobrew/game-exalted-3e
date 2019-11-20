@@ -20,13 +20,22 @@ export const BreadCrumbBar = ({ to = [] }: BreadCrumbBarProps) => {
     </StyledLink>
   ))
   return (
-    <Styled.div>
+    <Styled.div
+      sx={{
+        "*": {
+          ":after": {
+            display: "inline-block",
+            m: 1,
+            content: `"/"`,
+            color: "text",
+          },
+        },
+      }}
+    >
       <StyledLink key={gameId} to={pathify(gameId)}>
         {gameShortName}
       </StyledLink>
-      {links.length > 0 ? " / " : null}
-      {[...intersperse(links, " / ")]}
-      {" / "}
+      {links}
     </Styled.div>
   )
 }
