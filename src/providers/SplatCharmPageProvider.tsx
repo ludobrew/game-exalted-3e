@@ -52,6 +52,11 @@ export const query = graphql`
         ... on Mdx {
           body
         }
+        file: parent {
+          ... on File {
+            ...GithubEditLinkFileData
+          }
+        }
       }
     }
 

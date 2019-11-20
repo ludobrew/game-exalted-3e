@@ -8,8 +8,10 @@ import { MDXRenderer } from "gatsby-plugin-mdx"
 import Layout from "./Layout"
 import { StyledLink, BreadCrumbBar } from "./Common"
 import { intersperse } from "../lib"
-import { gameId } from "../data"
+import { GithubEditLink } from "@ludobrew/core/src/components/Github"
+import css from "@emotion/css"
 import { pathify } from "@ludobrew/core/gatsbyNodeTools"
+import { gameId } from "../data"
 
 type RequirementLinkProps = {
   charmlike: Charmlike
@@ -200,7 +202,19 @@ const SplatCharmPageLayout: React.FC<any> = ({ data, pageContext }) => {
   return (
     <Layout>
       <BreadCrumbBar to={[charm.splat, charm.trait]} />
-      <Styled.h1>{charm.name}</Styled.h1>
+      <Styled.h1
+        sx={{
+          display: "inline-block",
+        }}
+      >
+        {charm.name}
+      </Styled.h1>{" "}
+      <GithubEditLink
+        sx={{
+          verticalAlign: "baseline",
+        }}
+        file={charm.mdx.file}
+      />
       <InfoBlob charm={charm} requiresData={requires} />
       <MDXRenderer>{charm.mdx.body}</MDXRenderer>
       <BuildsToLine requiredForData={requiredForInSplat} />
