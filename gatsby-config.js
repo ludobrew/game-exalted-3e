@@ -14,7 +14,7 @@ module.exports = (themeOptions) => {
     plugins: [
       "@ludobrew/core",
       ...generateSourceFilesystemPlugins({
-        currentDir: resolve("."),
+        currentDir: process.cwd(),
         contentDirectories,
         pluginId: "ex3",
       }),
