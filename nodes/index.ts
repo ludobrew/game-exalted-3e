@@ -19,6 +19,10 @@ const pagesGlob = path
   .resolve(path.join(__dirname, "**", "Pages.ts"))
   .replace(/\\/g, "/")
 
+type HasMakePages = {
+  makePages: typeof createNodePages
+}
+
 export const createNodePages = async (
   args: CreatePagesArgs,
   themeOptions?: PluginOptions,
@@ -28,11 +32,8 @@ export const createNodePages = async (
   await Promise.all(
     pageMatches
       .map(require)
-      .map((fn: { makePages?: typeof createNodePages }) => {
-        if (fn.makePages) {
-          return fn.makePages(args, themeOptions)
-        }
-      }),
+      .filter(fn => fn.makePages)
+      .map<HasMakePages>(fn => fn.makePages(args, themeOptions)),
   )
 }
 
