@@ -65,27 +65,19 @@ export type CharmNode = CharmlikeNode<Charm>
 export const makeCharmNode = (
   props: CreateNodeArgs,
   fileNode: FileNode,
-  options?: PluginOptions,
+  _?: PluginOptions,
 ) => {
-  const {
-    node: mdxNode,
-    reporter,
-    actions,
-    createContentDigest,
-    createNodeId,
-  } = props
+  const { node: mdxNode, reporter, createContentDigest, createNodeId } = props
   const {
     content,
     ...otherFrontmatter
   } = (mdxNode as RawCharmMDXNode).frontmatter
-  const { createNode, createParentChildLink } = actions
   const { errorMessage, valuesPresent } = generateFrontmatterCheckers(
     requiredCharmFrontmatter,
   )
 
   switch (content) {
     case "preface":
-      console.log(`Doing preface ${fileNode.relativePath}`)
       return
     case "charm":
       valuesPresent(
@@ -99,16 +91,15 @@ export const makeCharmNode = (
 
       // Should make
       //  /solar/athletics/gripping-sunlight
-      //  /uags/bureaucracy/little-spider
-      const url = pathify(gameId, splat, trait, name) // "/" + [splat, trait, name].map(s => dashify(s)).join("/")
 
       const newNode: NodeInput & Charmlike = {
         charmType: "splat",
         charmSource: splat,
         ...(otherFrontmatter as Charm),
         parent: mdxNode.id,
-        url,
+        url: pathify(gameId, splat, trait, name),
         id: createNodeId(`${mdxNode.id} >>> ExaltedCharm${splat}${name}`),
+        friendlyNames: [`${splat} ${name}`, name],
         internal: {
           type: charmNodeType,
           contentDigest: createContentDigest(otherFrontmatter),

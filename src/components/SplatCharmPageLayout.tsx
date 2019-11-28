@@ -23,9 +23,9 @@ const RequirementLink = ({ charmlike }: RequirementLinkProps) => {
 
 type RequiresData = {
   found: string[]
-  links: {
-    friendlyName: string
-    charmlike: Charmlike
+  charms: {
+    name: string
+    friendlyNames: string[]
     charmSource: string
   }[]
 }
@@ -36,9 +36,7 @@ const BuildsToLine: React.FC<{
       field: string
       fieldValue: string
       totalCount: number
-      links: {
-        charmlike: Charmlike
-      }[]
+      charms: Charmlike[]
     }[]
   }
 }> = ({ requiredForData }) => {
@@ -56,7 +54,7 @@ const BuildsToLine: React.FC<{
             {group.totalCount > 1 ? "s" : ""}
           </Styled.h3>
           <Styled.ul>
-            {group.links.map(({ charmlike }) => {
+            {group.charms.map(charmlike => {
               return (
                 <Styled.li key={charmlike.name}>
                   Essence {charmlike.essence},{" "}
@@ -88,27 +86,27 @@ const RequirementsLine: React.FC<{
     // If we matched the requirement
     if (requiresData.found.indexOf(rawRequirement) >= 0) {
       // Find the link object
-      const possibleLinks = requiresData.links.filter(
-        link => link.friendlyName === rawRequirement,
+      const possibleCharms = requiresData.charms.filter(
+        charm => charm.name === rawRequirement,
       )
       // If there's many possibilities
-      if (possibleLinks.length > 1) {
+      if (possibleCharms.length > 1) {
         // Find something that is of the same charmSource
         //  Bear Sleep Technique needs Lunar Ox-Body Technique
-        const moreLikelyLink = possibleLinks.find(
-          link => link.charmSource === charmlike.charmSource,
+        const moreLikelyCharm = possibleCharms.find(
+          charm => charm.charmSource === charmlike.charmSource,
         )
         return (
           <RequirementLink
             key={rawRequirement}
-            charmlike={moreLikelyLink.charmlike}
+            charmlike={moreLikelyCharm as any}
           />
         )
-      } else if (possibleLinks.length === 1) {
+      } else if (possibleCharms.length === 1) {
         return (
           <RequirementLink
             key={rawRequirement}
-            charmlike={possibleLinks[0].charmlike}
+            charmlike={possibleCharms[0] as any}
           />
         )
       } else {
@@ -218,7 +216,6 @@ const SplatCharmPageLayout: React.FC<any> = ({ data, pageContext }) => {
       <InfoBlob charm={charm} requiresData={requires} />
       <MDXRenderer>{charm.mdx.body}</MDXRenderer>
       <BuildsToLine requiredForData={requiredForInSplat} />
-      <BuildsToLine requiredForData={requiredForOther} />
     </Layout>
   )
 }

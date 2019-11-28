@@ -15,7 +15,7 @@ export const fragments = graphql`
     rating
     shortDescription
     charmSource
-    category
+    tree
     url
   }
 `

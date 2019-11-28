@@ -11,23 +11,6 @@ const SplatCharmPageProvider: React.FC<any> = ({ data, pageContext }) => {
 export default SplatCharmPageProvider
 
 export const query = graphql`
-  fragment RequirementLinkData on RequirementLinkToExaltedCharmlikeGroupConnection {
-    field
-    fieldValue
-    totalCount
-    links: nodes {
-      charmlike {
-        url
-        name
-        essence
-        ... on ExaltedCharm {
-          trait
-          rating
-        }
-      }
-    }
-  }
-
   query SplatCharmPageProvider(
     $names: [String]
     $charmSource: String
@@ -60,48 +43,30 @@ export const query = graphql`
       }
     }
 
-    requiredForInSplat: allRequirementLinkToExaltedCharmlike(
-      sort: {
-        fields: [charmlike___essence, charmlike___rating, charmlike___name]
-        order: ASC
-      }
-      filter: {
-        requirement: { in: $names }
-        charmSource: { eq: $charmSource }
-        charmlike: { charmType: { eq: splat } }
-      }
+    requiredForInSplat: allExaltedCharm(
+      sort: { fields: [essence, rating, name], order: ASC }
+      filter: { requires: { in: $names }, charmSource: { eq: $charmSource } }
     ) {
-      group(field: charmlike___charmSource) {
-        ...RequirementLinkData
-      }
-    }
-
-    requiredForOther: allRequirementLinkToExaltedCharmlike(
-      sort: {
-        fields: [charmlike___essence, charmlike___rating, charmlike___name]
-        order: ASC
-      }
-      filter: {
-        requirement: { in: $names }
-        charmlike: { charmType: { ne: splat } }
-      }
-    ) {
-      group(field: charmlike___charmType) {
-        ...RequirementLinkData
-      }
-    }
-
-    requires: allFriendlyLinkToExaltedCharmlike(
-      filter: { friendlyName: { in: $requires } }
-    ) {
-      found: distinct(field: friendlyName)
-      links: nodes {
-        friendlyName
-        charmSource
-        charmlike {
+      group(field: trait) {
+        fieldValue
+        totalCount
+        charms: nodes {
           url
           name
+          essence
+          trait
+          rating
         }
+      }
+    }
+
+    requires: allCharmlike(filter: { friendlyNames: { in: $requires } }) {
+      found: distinct(field: name)
+      charms: nodes {
+        charmSource
+        url
+        friendlyNames
+        name
       }
     }
   }
