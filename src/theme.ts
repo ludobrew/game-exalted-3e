@@ -3,11 +3,14 @@ import { jsx, Theme } from "theme-ui"
 
 export default {
   colors: {
-    primary: "#F00",
-    secondary: "#0F0",
-    accent: "#00F",
+    primary: "#fcd734",
+    secondary: "#444",
+    accent: "blue[1]",
     text: "#222",
+    textLight: "#EFEFEF",
     background: "#EFEFEF",
+
+    blue: ["hsl(240, 150%, 55%)", "#2234a3", "#000f73"],
   },
 
   // h6/h5/h4/h3/h2/h1
@@ -22,7 +25,7 @@ export default {
   layouts: {
     header: {
       bg: "primary",
-      color: "#FFF",
+      color: "#000",
       p: "2",
     },
     mainBody: {
@@ -33,7 +36,8 @@ export default {
       p: "2",
     },
     footer: {
-      bg: "accent",
+      bg: "secondary",
+      color: "textLight",
       p: "2",
     },
   },
@@ -57,6 +61,13 @@ export default {
     },
     a: {
       fontFamily: "body",
+      color: "blue.0",
+      "&:visited": {
+        color: "blue.2",
+      },
+      "&:active": {
+        color: "blue.1",
+      },
     },
   },
 } as Theme

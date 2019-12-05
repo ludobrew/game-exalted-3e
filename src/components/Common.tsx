@@ -13,29 +13,37 @@ type BreadCrumbBarProps = {
   to?: string[]
 }
 
+export const SlashSeperator = (props : any) => <Styled.div
+  sx={{
+    "*": {
+      ":after": {
+        display: "inline-block",
+        m: 1,
+        content: `"/"`,
+        color: "text",
+      },
+    },
+  }}
+  {...props}
+/>
+
 export const BreadCrumbBar = ({ to = [] }: BreadCrumbBarProps) => {
+
   const links = to.map((item, index, array) => (
     <StyledLink key={item} to={pathify(gameId, ...array.slice(0, index + 1))}>
       {item}
     </StyledLink>
   ))
+
   return (
-    <Styled.div
-      sx={{
-        "*": {
-          ":after": {
-            display: "inline-block",
-            m: 1,
-            content: `"/"`,
-            color: "text",
-          },
-        },
-      }}
-    >
+    <SlashSeperator>
+      <StyledLink key={"Home"} to={"/"}>
+        Home
+      </StyledLink>
       <StyledLink key={gameId} to={pathify(gameId)}>
         {gameShortName}
       </StyledLink>
       {links}
-    </Styled.div>
+    </SlashSeperator>
   )
 }

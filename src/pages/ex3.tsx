@@ -3,7 +3,7 @@ import { jsx, Styled } from "theme-ui"
 import { graphql } from "gatsby"
 import { SplatLink } from "../components/Charm/CharmData"
 import Layout from "../components/Layout"
-import { StyledLink } from "../components/Common"
+import { BreadCrumbBar } from "../components/Common"
 
 const getSplats: (any) => { name: string; count: number }[] = data => {
   const arr = data.splats.splatInfo || []
@@ -15,9 +15,7 @@ export default props => {
 
   return (
     <Layout>
-      <Styled.div>
-        <StyledLink to="/">Home</StyledLink>
-      </Styled.div>
+      <BreadCrumbBar />
       <Styled.h1>Exalted 3e homebrew</Styled.h1>
       <Styled.ul>
         {getSplats(data).map(({ name, count }) => (
