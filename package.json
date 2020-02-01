@@ -11,14 +11,9 @@
     "url": "https://github.com/ludobrew/game-exalted-3e",
     "type": "git"
   },
-  "files": [
-    "./*.js",
-    "./*.d.ts",
-    "./**/*.js",
-    "./**/*.d.ts"
-  ],
   "license": "MIT",
   "scripts": {
+    "test": "tsc --no-emit",
     "start": "yarn watch",
     "develop": "gatsby develop",
     "watch": "tsc -w",

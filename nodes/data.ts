@@ -38,4 +38,3 @@ export const baseSplats = [
   "Hearteater",
   "Umbral",
 ] as const
-
