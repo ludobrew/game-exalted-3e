@@ -59,16 +59,17 @@ const makeSplatPages = async (
   const { actions, graphql } = args
   const { createPage } = actions
 
-  const splatListing = await simpleGraphql(
-    graphql,
-    `
+  const gql = simpleGraphql(graphql)
+
+  type DistinctCharmFieldQuery = { allExaltedCharm: { distinct: string[] } }
+
+  const splatListing = await gql<DistinctCharmFieldQuery>`
     {
       allExaltedCharm(filter: { charmType: { eq: splat } }) {
         distinct(field: charmSource)
       }
     }
-  `,
-  )
+  `
 
   for (const splat of splatListing.allExaltedCharm.distinct) {
     createPage({
@@ -79,9 +80,7 @@ const makeSplatPages = async (
       },
     })
 
-    const traitListing = await simpleGraphql(
-      graphql,
-      `
+    const traitListing = await gql<DistinctCharmFieldQuery>`
       {
         allExaltedCharm(
           filter: {
@@ -92,8 +91,7 @@ const makeSplatPages = async (
           distinct(field: trait)
         }
       }
-    `,
-    )
+    `
 
     for (const trait of traitListing.allExaltedCharm.distinct) {
       createPage({
