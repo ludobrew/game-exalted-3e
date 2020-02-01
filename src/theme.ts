@@ -5,11 +5,12 @@ export default {
   colors: {
     primary: "#fcd734",
     secondary: "#444",
-    accent: "blue[1]",
+    accent: "#2234a3",
     text: "#222",
     textLight: "#EFEFEF",
     background: "#EFEFEF",
 
+    grey: ["#DBDBDB", "#EFEFEF", "#444"],
     blue: ["hsl(240, 150%, 55%)", "#2234a3", "#000f73"],
   },
 
@@ -67,6 +68,30 @@ export default {
       },
       "&:active": {
         color: "blue.1",
+      },
+    },
+    table: {
+      borderCollapse: "collapse",
+      borderSpacing: 0,
+      thead: {
+        bg: "secondary",
+        color: "textLight",
+      },
+      tbody: {
+        tr: {
+          ":nth-child(even)": {
+            bg: "grey.0",
+          },
+          ":hover": {
+            bg: "primary",
+          },
+        },
+      },
+      th: {
+        p: 2,
+      },
+      td: {
+        p: 2,
       },
     },
   },
