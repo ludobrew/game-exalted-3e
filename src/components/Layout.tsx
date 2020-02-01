@@ -4,7 +4,7 @@ import { Global } from "@emotion/core"
 import theme from "../theme"
 import { Helmet } from "react-helmet-async"
 import React from "react"
-import { useStaticQuery, graphql } from "gatsby";
+import { useStaticQuery, graphql } from "gatsby"
 
 interface PreloadFontProps {
   family: string
@@ -24,7 +24,7 @@ const PreloadFont = ({ family, sizes }: PreloadFontProps) => {
 
 export default props => {
   const data = useStaticQuery(graphql`
-     query GetSiteTitleAndDescription {
+    query GetSiteTitleAndDescription {
       site {
         siteMetadata {
           title
@@ -34,7 +34,7 @@ export default props => {
     }
   `)
 
-  const {title, description} = data.site.siteMetadata
+  const { title, description } = data.site.siteMetadata
 
   return (
     <ThemeProvider theme={theme}>
@@ -48,7 +48,11 @@ export default props => {
         })}
       />
       <PreloadFont key="a" family="Cinzel" sizes={[900]} />
-      <PreloadFont key="b" family="Volkhov" sizes={[400, "400i", 700, "700i"]} />
+      <PreloadFont
+        key="b"
+        family="Volkhov"
+        sizes={[400, "400i", 700, "700i"]}
+      />
       <Styled.div
         as="main"
         sx={{
@@ -68,12 +72,12 @@ export default props => {
           sx={{
             variant: "layouts.header",
             gridArea: "header",
-            p: 3
+            p: 3,
           }}
         >
-          <Styled.h1 sx={{m: 0}}>{title}</Styled.h1>
-          <Styled.hr/>
-          <Styled.p sx={{m: 0}}>{description}</Styled.p>
+          <Styled.h1 sx={{ m: 0 }}>{title}</Styled.h1>
+          <Styled.hr />
+          <Styled.p sx={{ m: 0 }}>{description}</Styled.p>
         </Styled.div>
         {/* <nav
           sx={{
@@ -83,7 +87,8 @@ export default props => {
         >
           Nav things
         </nav> */}
-        <Styled.div as="main"
+        <Styled.div
+          as="main"
           sx={{
             variant: "layouts.mainBody",
             gridArea: "mainBody",
@@ -91,7 +96,8 @@ export default props => {
         >
           {props.children}
         </Styled.div>
-        <Styled.div as="footer"
+        <Styled.div
+          as="footer"
           sx={{
             variant: "layouts.footer",
             gridArea: "footer",
