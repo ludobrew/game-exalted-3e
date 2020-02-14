@@ -1,5 +1,5 @@
 {
-  "name": "@ludobrew/game-exalted-3e",
+  "name": "gatsby-theme-ludobrew-exalted-3e",
   "publishConfig": {
     "access": "public"
   },
@@ -20,7 +20,7 @@
     "build": "tsc"
   },
   "peerDependencies": {
-    "@ludobrew/core": "*"
+    "gatsby-theme-ludobrew-core": "*"
   },
   "devDependencies": {
     "@types/glob": "7.1.1",

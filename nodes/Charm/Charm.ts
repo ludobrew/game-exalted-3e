@@ -1,8 +1,7 @@
 import { CreateNodeArgs, PluginOptions, Node, NodeInput } from "gatsby"
 import { Charmlike, CharmlikeNode, makeCharmlikeNode } from "../Charmlike"
-import { generateFrontmatterCheckers } from "@ludobrew/core/markdown"
-import { FileNode, pathify } from "@ludobrew/core/gatsbyNodeTools"
-import { gameId } from "@ludobrew/game-exalted-3e/src/data"
+import { generateFrontmatterCheckers } from "gatsby-theme-ludobrew-core/markdown"
+import { FileNode, pathify } from "gatsby-theme-ludobrew-core/gatsbyNodeTools"
 
 export const charmNodeType = "ExaltedCharm" as const
 
@@ -23,15 +22,6 @@ type AcceptedPrefaceMDXFrontmatter = {
 type CharmPagePreface = {
   trait: string
   splat: string
-}
-
-type CharmPagePrefaceNode = CharmPagePreface & NodeInput
-
-const keys = ["a", "b"] as const
-
-const result: Record<typeof keys[number], number> = {
-  a: 1,
-  b: 2,
 }
 
 export const allCharmlikeProperties: Array<keyof Charmlike> = [
@@ -97,7 +87,7 @@ export const makeCharmNode = (
         charmSource: splat,
         ...(otherFrontmatter as Charm),
         parent: mdxNode.id,
-        url: pathify(gameId, splat, trait, name),
+        url: pathify(splat, trait, name),
         id: createNodeId(`${mdxNode.id} >>> ExaltedCharm${splat}${name}`),
         friendlyNames: [`${splat} ${name}`, name],
         internal: {

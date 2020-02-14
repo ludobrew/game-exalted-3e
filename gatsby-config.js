@@ -7,12 +7,12 @@ require('ts-node').register({
 })
 
 const { contentDirectories } = require("./nodes/data")
-const { generateSourceFilesystemPlugins } = require("@ludobrew/core/file")
+const { generateSourceFilesystemPlugins } = require("gatsby-theme-ludobrew-core/file")
 const { resolve } = require("path")
 module.exports = (themeOptions) => {
   return {
     plugins: [
-      "@ludobrew/core",
+      "gatsby-theme-ludobrew-core",
       ...generateSourceFilesystemPlugins({
         currentDir: process.cwd(),
         contentDirectories,

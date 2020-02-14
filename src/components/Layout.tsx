@@ -1,10 +1,9 @@
 /** @jsx jsx */
-import { ThemeProvider, jsx, Styled } from "theme-ui"
-import { Global } from "@emotion/core"
-import theme from "../theme"
+import { jsx, Styled } from "theme-ui"
 import { Helmet } from "react-helmet-async"
 import React from "react"
 import { useStaticQuery, graphql } from "gatsby"
+import { StyleReset } from "gatsby-theme-ludobrew-core/src/components/StyleReset"
 
 interface PreloadFontProps {
   family: string
@@ -37,16 +36,8 @@ export default props => {
   const { title, description } = data.site.siteMetadata
 
   return (
-    <ThemeProvider theme={theme}>
-      <Global
-        styles={theme => ({
-          body: {
-            background: theme.colors.background,
-            padding: 0,
-            margin: 0,
-          },
-        })}
-      />
+    <React.Fragment>
+      <StyleReset />
       <PreloadFont key="a" family="Cinzel" sizes={[900]} />
       <PreloadFont
         key="b"
@@ -106,6 +97,6 @@ export default props => {
           {/* TODO: stuff here */}
         </Styled.div>
       </Styled.div>
-    </ThemeProvider>
+    </React.Fragment>
   )
 }

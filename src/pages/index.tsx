@@ -4,6 +4,7 @@ import { graphql } from "gatsby"
 import { SplatLink } from "../components/Charm/CharmData"
 import Layout from "../components/Layout"
 import { BreadCrumbBar, StyledLink } from "../components/Common"
+import { MDXRenderer } from "gatsby-plugin-mdx"
 
 const getSplats: (any: any) => { name: string; count: number }[] = data => {
   const arr = data.splats.splatInfo || []
@@ -23,7 +24,7 @@ export default props => {
   return (
     <Layout>
       <BreadCrumbBar />
-      <Styled.h1>Exalted 3e homebrew</Styled.h1>
+      {data.mdx?.body ? <MDXRenderer>{data.mdx.body}</MDXRenderer> : null}
       <Styled.h2>Homebrew Documents</Styled.h2>
       <Styled.ul>
         {getPages(data).map(({ name, path }) => (
@@ -46,8 +47,12 @@ export default props => {
 
 export const exalted3equery = graphql`
   query Exalted3ePageQuery {
+    mdx(frontmatter: { content: { eq: "Home" } }) {
+      body
+    }
+
     pages: allSitePage(
-      filter: { path: { regex: "/^/ex3/pages/" } }
+      filter: { path: { regex: "/^/pages/" } }
       sort: { fields: path }
     ) {
       pageInfo: nodes {

@@ -8,10 +8,7 @@ import { MDXRenderer } from "gatsby-plugin-mdx"
 import Layout from "./Layout"
 import { StyledLink, BreadCrumbBar } from "./Common"
 import { intersperse } from "../lib"
-import { GithubEditLink } from "@ludobrew/core/src/components/Github"
-import css from "@emotion/css"
-import { pathify } from "@ludobrew/core/gatsbyNodeTools"
-import { gameId } from "../data"
+import { GithubEditLink } from "gatsby-theme-ludobrew-core/src/components/Github"
 
 type RequirementLinkProps = {
   charmlike: Charmlike
@@ -139,10 +136,10 @@ const TagLine = ({ tags = [], splat }: TagLineProps) => {
     return null
   }
 
-  // TODO: when I make the pathify(gameId, splat, "tag", tag) path.
+  // TODO: when I make the pathify(splat, "tag", tag) path.
   let tagLine = tags.map(
     tag =>
-      // <StyledLink key={tag} to={pathify(gameId, splat, "tag", tag)}>
+      // <StyledLink key={tag} to={pathify(splat, "tag", tag)}>
       tag,
     // </StyledLink>
   )
@@ -163,12 +160,12 @@ const InfoBlob = ({ charm, requiresData }: InfoBlobProps) => {
 
   if (keywords) {
     if (Array.isArray(keywords) && keywords.length > 0) {
-      // TODO: when I make the pathify(gameId, splat, "keyword", keyword) path.
+      // TODO: when I make the pathify(splat, "keyword", keyword) path.
       keywordBlob = keywords.map(
         keyword =>
           // <StyledLink
           //   key={keyword}
-          //   to={pathify(gameId, splat, "keyword", keyword)}
+          //   to={pathify(splat, "keyword", keyword)}
           // >
           keyword,
         // </StyledLink>

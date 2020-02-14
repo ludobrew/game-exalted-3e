@@ -2,8 +2,7 @@
 import { jsx, Styled } from "theme-ui"
 
 import React from "react"
-import { pathify } from "@ludobrew/core/gatsbyNodeTools"
-import { gameId } from "@ludobrew/game-exalted-3e/src/data"
+import { pathify } from "gatsby-theme-ludobrew-core/gatsbyNodeTools"
 import Layout from "./Layout"
 import { StyledLink, BreadCrumbBar } from "./Common"
 
@@ -24,7 +23,7 @@ const SplatPageLayout: React.FC<any> = ({ data, pageContext }) => {
           .sort((a, b) => traitOrder(a.name, b.name))
           .map(({ name, count }) => (
             <Styled.li key={name}>
-              <StyledLink to={pathify(gameId, splat, name)}>{name}</StyledLink>
+              <StyledLink to={pathify(splat, name)}>{name}</StyledLink>
               {" - "}
               {count} Charm{count == 1 ? "" : "s"}
             </Styled.li>

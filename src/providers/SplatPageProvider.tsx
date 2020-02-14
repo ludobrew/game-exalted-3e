@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { jsx } from "@emotion/core"
+import { jsx } from "theme-ui"
 import React from "react"
 import { graphql } from "gatsby"
 import SplatPageLayout from "../components/SplatPageLayout"

@@ -1,10 +1,12 @@
 import { CreateNodeArgs, PluginOptions, CreatePagesArgs } from "gatsby"
-import { FileNode, getSourceInstanceName } from "@ludobrew/core/gatsbyNodeTools"
+import {
+  FileNode,
+  getSourceInstanceName,
+} from "gatsby-theme-ludobrew-core/gatsbyNodeTools"
 import { contentDirectories } from "./data"
 import path from "path"
 import glob from "glob"
 import { makeCharmNode } from "./Charm/Charm"
-import { gameId } from "@ludobrew/game-exalted-3e/src/data"
 
 const asyncGlob = (pattern: string, options?: glob.IOptions) => {
   return new Promise<string[]>((resolve, reject) => {
@@ -44,14 +46,8 @@ export const handleMDXNode = async (
   const { node, getNode } = props
   const fileNode: FileNode = await getNode(node.parent)
 
-  const mySourceInstanceName = getSourceInstanceName(
-    contentDirectories,
-    gameId,
-    fileNode,
-  )
-
   // Probably the wrong way to handle things
-  switch (mySourceInstanceName) {
+  switch (fileNode.sourceInstanceName) {
     case "Artifacts/Armors":
       break
     case "Artifacts/Other":

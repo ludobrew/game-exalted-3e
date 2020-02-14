@@ -1,8 +1,10 @@
 import { CreatePagesArgs, PluginOptions } from "gatsby"
-import { pathify, simpleGraphql } from "@ludobrew/core/gatsbyNodeTools"
-import { gameId } from "@ludobrew/game-exalted-3e/src/data"
+import {
+  pathify,
+  simpleGraphql,
+} from "gatsby-theme-ludobrew-core/gatsbyNodeTools"
 
-const basePath = "@ludobrew/game-exalted-3e/src/providers"
+const basePath = "gatsby-theme-ludobrew-exalted-3e/src/providers"
 const splatPageComponent = require.resolve(`${basePath}/SplatPageProvider`)
 const splatTraitPageComponent = require.resolve(
   `${basePath}/SplatTraitPageProvider.tsx`,
@@ -73,7 +75,7 @@ const makeSplatPages = async (
 
   for (const splat of splatListing.allExaltedCharm.distinct) {
     createPage({
-      path: pathify(gameId, splat),
+      path: pathify(splat),
       component: splatPageComponent,
       context: {
         splat,
@@ -95,7 +97,7 @@ const makeSplatPages = async (
 
     for (const trait of traitListing.allExaltedCharm.distinct) {
       createPage({
-        path: pathify(gameId, splat, trait),
+        path: pathify(splat, trait),
         component: splatTraitPageComponent,
         context: {
           splat,

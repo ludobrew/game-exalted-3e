@@ -1,8 +1,7 @@
 /** @jsx jsx */
-import { pathify } from "@ludobrew/core/gatsbyNodeTools"
-import { gameId } from "@ludobrew/game-exalted-3e/src/data"
-import { Charm } from "@ludobrew/game-exalted-3e/nodes/Charm/Charm"
-import { Charmlike } from "@ludobrew/game-exalted-3e/nodes/Charmlike"
+import { pathify } from "gatsby-theme-ludobrew-core/gatsbyNodeTools"
+import { Charm } from "gatsby-theme-ludobrew-exalted-3e/nodes/Charm/Charm"
+import { Charmlike } from "gatsby-theme-ludobrew-exalted-3e/nodes/Charmlike"
 import { graphql } from "gatsby"
 import React from "react"
 import { jsx, Styled } from "theme-ui"
@@ -36,7 +35,7 @@ export const TraitRequirement: React.FC<{
 }> = ({ charm, linkTrait = false }) => (
   <React.Fragment>
     {linkTrait ? (
-      <StyledLink to={pathify(gameId, charm.charmSource, charm.trait)}>
+      <StyledLink to={pathify(charm.charmSource, charm.trait)}>
         {charm.trait}
       </StyledLink>
     ) : (
@@ -47,13 +46,13 @@ export const TraitRequirement: React.FC<{
 )
 
 export const TraitCategoryLink: CharmFunction = ({ charm }) => (
-  <StyledLink to={pathify(gameId, charm.charmSource, charm.trait)}>
+  <StyledLink to={pathify(charm.charmSource, charm.trait)}>
     {charm.trait}
   </StyledLink>
 )
 
 export const SplatLink: React.FC<{ splat: string }> = ({ splat }) => (
-  <StyledLink to={pathify(gameId, splat)}>{splat}</StyledLink>
+  <StyledLink to={pathify(splat)}>{splat}</StyledLink>
 )
 
 export const CharmDiscription: GenericCharmFunction = ({ charm }) => (
