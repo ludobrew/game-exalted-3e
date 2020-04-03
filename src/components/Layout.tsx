@@ -4,6 +4,7 @@ import { Helmet } from "react-helmet-async"
 import React from "react"
 import { useStaticQuery, graphql } from "gatsby"
 import { StyleReset } from "gatsby-theme-ludobrew-core/src/components/StyleReset"
+import { MDXProvider } from "@mdx-js/react"
 
 interface PreloadFontProps {
   family: string
@@ -85,7 +86,14 @@ export default props => {
             gridArea: "mainBody",
           }}
         >
-          {props.children}
+          {/* Current workaround for theme-ui by default providing a screwy table that is unstyled */}
+          <MDXProvider
+            components={{
+              table: Styled.table,
+            }}
+          >
+            {props.children}
+          </MDXProvider>
         </Styled.div>
         <Styled.div
           as="footer"
