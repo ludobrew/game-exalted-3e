@@ -90,6 +90,10 @@ export default props => {
           <MDXProvider
             components={{
               table: Styled.table,
+              p: Styled.p,
+              li: Styled.li,
+              ul: Styled.ul,
+              ol: Styled.ol,
             }}
           >
             {props.children}
