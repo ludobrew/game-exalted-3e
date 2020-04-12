@@ -3,9 +3,9 @@ import { jsx, Styled } from "theme-ui"
 
 import React from "react"
 import { pathify } from "gatsby-theme-ludobrew-core/gatsbyNodeTools"
+import { OptionalMdxRenderer } from "gatsby-theme-ludobrew-core/src/components/OptionalMdxRenderer"
 import Layout from "./Layout"
 import { StyledLink, BreadCrumbBar } from "./Common"
-import { MDXRenderer } from "gatsby-plugin-mdx"
 
 const traitOrder = (a: string, b: string) =>
   a === "Universal" ? -1 : a.localeCompare(b)
@@ -18,7 +18,7 @@ const SplatPageLayout: React.FC<any> = ({ data, pageContext }) => {
     <Layout>
       <BreadCrumbBar />
       <Styled.h1>{splat}</Styled.h1>
-      {preface?.body ? <MDXRenderer>{preface?.body}</MDXRenderer> : null}
+      <OptionalMdxRenderer mdxNode={preface} />
       <Styled.h2>Charms</Styled.h2>
       <Styled.ul>
         {traitList.traits

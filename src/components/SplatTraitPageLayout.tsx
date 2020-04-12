@@ -2,11 +2,11 @@
 import { jsx, Styled } from "theme-ui"
 import React from "react"
 import { graphql } from "gatsby"
-import { MDXRenderer } from "gatsby-plugin-mdx"
 import { Charm } from "gatsby-theme-ludobrew-exalted-3e/nodes/Charm/Charm"
 import { CharmTagline } from "./Charm/CharmData"
 import Layout from "./Layout"
 import { BreadCrumbBar } from "./Common"
+import { OptionalMdxRenderer } from "gatsby-theme-ludobrew-core/src/components/OptionalMdxRenderer"
 
 export const fragments = graphql`
   fragment SplatCharmPageTagline on ExaltedCharm {
@@ -58,7 +58,7 @@ const SplatTraitPageLayout: React.FC<any> = ({ data, pageContext }) => {
     <Layout>
       <BreadCrumbBar to={[splat]} />
       <Styled.h1>{trait}</Styled.h1>
-      {preface ? <MDXRenderer>{preface.body}</MDXRenderer> : null}
+      <OptionalMdxRenderer mdxNode={preface} />
       {charmTrees.trees.map(tree => (
         <TreeDisplay key={tree.treeName} {...tree} />
       ))}
