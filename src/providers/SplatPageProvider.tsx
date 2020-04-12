@@ -12,9 +12,15 @@ export default SplatPageProvider
 
 export const query = graphql`
   query SplatPageProvider($splat: String) {
-    # allExaltedCharm(filter: { charmSource: { eq: $splat } }) {
-    #   traits: distinct(field: trait)
-    # }
+    preface: mdx(
+      frontmatter: {
+        content: { eq: "preface" }
+        splat: { eq: $splat }
+        trait: { eq: null }
+      }
+    ) {
+      body
+    }
 
     traitList: allExaltedCharm(filter: { charmSource: { eq: $splat } }) {
       traits: group(field: trait) {
