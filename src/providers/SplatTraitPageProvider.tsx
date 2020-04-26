@@ -14,7 +14,7 @@ export const query = graphql`
   query SplatTraitPageProvider($splat: String, $trait: String) {
     preface: mdx(
       frontmatter: {
-        content: { eq: "preface" }
+        content: { eq: "ability preface" }
         splat: { eq: $splat }
         trait: { eq: $trait }
       }
