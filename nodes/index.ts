@@ -34,8 +34,8 @@ export const createNodePages = async (
   await Promise.all(
     pageMatches
       .map(require)
-      .filter(fn => fn.makePages)
-      .map<HasMakePages>(fn => fn.makePages(args, themeOptions)),
+      .filter((fn) => fn.makePages)
+      .map<HasMakePages>((fn) => fn.makePages(args, themeOptions)),
   )
 }
 
@@ -46,26 +46,10 @@ export const handleMDXNode = async (
   const { node, getNode } = props
   const fileNode: FileNode = await getNode(node.parent)
 
-  // Probably the wrong way to handle things
-  switch (fileNode.sourceInstanceName) {
-    case "Artifacts/Armors":
-      break
-    case "Artifacts/Other":
-      break
-    case "Artifacts/Weapons":
-      break
-    case "Charms":
+  // TODO: better type frontmatter
+  switch ((node.frontmatter as any).content) {
+    case "charm":
       return makeCharmNode(props, fileNode, options)
-    case "Pages":
-      break
-    case "QuickCharacters":
-      break
-    case "MartialArts":
-      break
-    case "Splats":
-      makeCharmNode(props, fileNode, options)
-      break
-
     default:
       return
   }

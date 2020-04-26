@@ -5,6 +5,7 @@ import { graphql } from "gatsby"
 import SplatPageLayout from "../components/SplatPageLayout"
 
 const SplatPageProvider: React.FC<any> = ({ data, pageContext }) => {
+  console.log({ data })
   return <SplatPageLayout data={data} pageContext={pageContext} />
 }
 
@@ -14,19 +15,14 @@ export const query = graphql`
   query SplatPageProvider($splat: String) {
     preface: mdx(
       frontmatter: {
-        content: { eq: "preface" }
+        content: { eq: "splat preface" }
         splat: { eq: $splat }
         trait: { eq: null }
       }
     ) {
+      id
       body
     }
-
-    traitList: allExaltedCharm(filter: { charmSource: { eq: $splat } }) {
-      traits: group(field: trait) {
-        name: fieldValue
-        count: totalCount
-      }
-    }
+    ...TraitListRequiredDataFragment
   }
 `

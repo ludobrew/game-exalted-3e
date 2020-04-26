@@ -3,14 +3,7 @@ export type ThemeOptions = Partial<{
 }>
 
 export const contentDirectories = [
-  "Pages",
-  "Artifacts/Armors",
-  "Artifacts/Weapons",
-  "Artifacts/Other",
-  "QuickCharacters",
-  "MartialArts",
-  "Charms",
-  "Splats",
+  "homebrew",
 ] as const
 
 export const baseSplats = [
