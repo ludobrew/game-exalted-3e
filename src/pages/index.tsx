@@ -6,19 +6,19 @@ import Layout from "../components/Layout"
 import { BreadCrumbBar, StyledLink } from "../components/Common"
 import { MDXRenderer } from "gatsby-plugin-mdx"
 
-const getSplats: (any: any) => { name: string; count: number }[] = data => {
+const getSplats: (any: any) => { name: string; count: number }[] = (data) => {
   const arr = data.splats.splatInfo || []
   return arr
 }
 
-const getPages: (any: any) => { name: string; path: string }[] = data => {
-  return data.pages.pageInfo.map(pageInfo => ({
+const getPages: (any: any) => { name: string; path: string }[] = (data) => {
+  return data.pages.pageInfo.map((pageInfo) => ({
     name: pageInfo.context.name,
     path: pageInfo.path,
   }))
 }
 
-export default props => {
+export default (props) => {
   const { data } = props
 
   return (
@@ -50,7 +50,6 @@ export const exalted3equery = graphql`
     mdx(frontmatter: { content: { eq: "Home" } }) {
       body
     }
-
     pages: allSitePage(
       filter: { path: { regex: "/^/pages/" } }
       sort: { fields: path }
