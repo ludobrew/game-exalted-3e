@@ -1,9 +1,5 @@
 import { CreateNodeArgs, PluginOptions, CreatePagesArgs } from "gatsby"
-import {
-  FileNode,
-  getSourceInstanceName,
-} from "gatsby-theme-ludobrew-core/gatsbyNodeTools"
-import { contentDirectories } from "./data"
+import { FileNode } from "gatsby-theme-ludobrew-core/gatsbyNodeTools"
 import path from "path"
 import glob from "glob"
 import { makeCharmNode } from "./Charm/Charm"
