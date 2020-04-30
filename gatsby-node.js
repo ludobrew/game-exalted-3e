@@ -34,8 +34,11 @@ module.exports = {
     try {
       const mod = require(`./gatsby-api/node/${api}`)
       memory[api] = mod.default
-    } catch {
-      // noop
+    } catch (e) {
+      if (e.code !== "MODULE_NOT_FOUND") {
+        console.log("Failed Loading:", api)
+        throw e
+      }
     }
 
     return memory
