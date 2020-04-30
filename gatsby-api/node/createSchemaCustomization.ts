@@ -94,7 +94,7 @@ const extensionPoint: GatsbyNode["createSchemaCustomization"] = async (
       ${charmlikeInterface}
     }
 
-    type ExaltedCharm implements Node & Charmlike {
+    type ExaltedSplatCharm implements Node & Charmlike {
       id: ID!
       ${charmlikeInterface}
     }

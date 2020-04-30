@@ -1,5 +1,5 @@
-import { CreateNodeArgs, PluginOptions } from "gatsby";
+import { CreateNodeArgs, PluginOptions } from "gatsby"
 
-export const makePageNode = (args: CreateNodeArgs, options?: PluginOptions) => {
-
+export const makePageNode = (_: CreateNodeArgs, __?: PluginOptions) => {
+  return
 }

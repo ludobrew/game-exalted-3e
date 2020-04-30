@@ -1,104 +1,59 @@
-import { CreateNodeArgs, PluginOptions, Node, NodeInput } from "gatsby"
-import { Charmlike, CharmlikeNode, makeCharmlikeNode } from "../Charmlike"
-import { generateFrontmatterCheckers } from "gatsby-theme-ludobrew-core/markdown"
-import { FileNode, pathify } from "gatsby-theme-ludobrew-core/gatsbyNodeTools"
+import { CharmlikeNode, charmlikeValidator } from "../Charmlike"
+import { pathify } from "gatsby-theme-ludobrew-core/gatsbyNodeTools"
+import * as yup from "yup"
+import { FrontmatterHandler, makeAndLinkNode, buildHandler } from "../types"
 
-export const charmNodeType = "ExaltedCharm" as const
+export const charmNodeType = "ExaltedSplatCharm" as const
 
-const types = ["preface", "charm"] as const
-
-type RawCharmMDXNode = {
-  frontmatter: AcceptedCharmMDXFrontmatter | AcceptedPrefaceMDXFrontmatter
-} & Node
-
-type AcceptedCharmMDXFrontmatter = {
-  content: "charm"
-} & Partial<Charm>
-
-type AcceptedPrefaceMDXFrontmatter = {
-  content: "preface"
-} & Partial<CharmPagePreface>
-
-type CharmPagePreface = {
+export type SplatCharmAdditionalProperties = {
   trait: string
   splat: string
+  rating?: number | null
 }
 
-export const allCharmlikeProperties: Array<keyof Charmlike> = [
-  "charmType",
-  "charmSource",
-  "name",
-  "essence",
-  "type",
-  "cost",
-  "duration",
-  "requires",
-  "tags",
-  "keywords",
-  "shortDescription",
-]
+const charmValidator = charmlikeValidator.shape<SplatCharmAdditionalProperties>(
+  {
+    trait: yup.string().required(),
+    splat: yup
+      .string()
+      .required((result) =>
+        JSON.stringify({ ...result, e: "Splat was wonky" }),
+      ),
+    rating: yup.number().notRequired().nullable().default(1),
+  },
+)
 
-const requiredCharmFrontmatter = ["trait", "splat", "rating"]
-export type Charm = {
-  trait: string
-  splat: string
-  rating: number
-} & Charmlike
+export type Charm = yup.InferType<typeof charmValidator>
+export type CharmNode = Charm & CharmlikeNode
 
-export const allCharmProperties: Array<keyof Charm> = [
-  ...allCharmlikeProperties,
-  ...(requiredCharmFrontmatter as Array<keyof Charm>),
-]
+const splatCharmHandler: FrontmatterHandler<Charm> = ({ result, args }) => {
+  const { name, splat, trait } = result
+  const { createContentDigest, createNodeId, node: parentNode } = args
 
-export type CharmNode = CharmlikeNode<Charm>
+  // Should make
+  //  /solar/athletics/gripping-sunlight
 
-export const makeCharmNode = (
-  props: CreateNodeArgs,
-  fileNode: FileNode,
-  _?: PluginOptions,
-) => {
-  const { node: mdxNode, reporter, createContentDigest, createNodeId } = props
-  const {
-    content,
-    ...otherFrontmatter
-  } = (mdxNode as RawCharmMDXNode).frontmatter
-  const { errorMessage, valuesPresent } = generateFrontmatterCheckers(
-    requiredCharmFrontmatter,
-  )
-
-  switch (content) {
-    case "preface":
-      return
-    case "charm":
-      valuesPresent(
-        requiredCharmFrontmatter,
-        otherFrontmatter as Charm,
-        fileNode,
-        reporter,
-      )
-
-      const { name, splat, trait } = otherFrontmatter as Charm
-
-      // Should make
-      //  /solar/athletics/gripping-sunlight
-
-      const newNode: NodeInput & Charmlike = {
-        charmType: "splat",
-        charmSource: splat,
-        ...(otherFrontmatter as Charm),
-        parent: mdxNode.id,
-        url: pathify(splat, trait, name),
-        id: createNodeId(`${mdxNode.id} >>> ExaltedCharm${splat}${name}`),
-        friendlyNames: [`${splat} ${name}`, name],
-        internal: {
-          type: charmNodeType,
-          contentDigest: createContentDigest(otherFrontmatter),
-          description: "It does stuff",
-        },
-      }
-      makeCharmlikeNode(props, newNode, mdxNode)
-      return
-    default:
-      reporter.error(errorMessage(fileNode, "content", types))
+  const newNode: CharmNode = {
+    charmType: "splat",
+    charmSource: splat,
+    ...result,
+    parent: parentNode.id,
+    url: pathify(splat, trait, name),
+    id: createNodeId(`${parentNode.id} >>> ExaltedSplatCharm${splat}${name}`),
+    friendlyNames: [`${splat} ${name}`, name],
+    internal: {
+      type: charmNodeType,
+      contentDigest: createContentDigest(result),
+      description: "It does stuff",
+    },
   }
+
+  makeAndLinkNode({ args, newNode, parentNode })
+  return
+}
+export const handlesContent = {
+  charm: buildHandler({
+    validator: charmValidator,
+    handler: splatCharmHandler,
+  }),
 }

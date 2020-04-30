@@ -1,7 +1,7 @@
 ---
-type: charm
+content: charm
 splat: solar
-ability: Craft
+trait: Craft
 ---
 
 It does things!

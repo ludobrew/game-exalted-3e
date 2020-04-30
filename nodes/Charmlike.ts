@@ -1,11 +1,9 @@
-import { Node, NodeInput, CreateNodeArgs } from "gatsby"
+import { NodeInput } from "gatsby"
+import * as yup from "yup"
 
 export type CharmType = "splat" | "ma" | "evocation" | "eclipse" | "other"
-export const charmNodeTypes = ["ExaltedCharm"] as const
 
-export type CharmlikeNode<T> = T & {
-  fields: CharmlikeNodefields
-} & Node
+export const charmNodeTypes = ["ExaltedSplatCharm"] as const
 
 export type CharmlikeNodefields = {
   /**
@@ -28,50 +26,29 @@ export type CharmRequirement = {
 
 export type Charmlike = {
   /**
-   * Type of thing
-   */
-  charmType: CharmType
-
-  /**
-   * "Name" and "$charmSource $name",
-   * could contain colloquialisms in the future
-   */
-  friendlyNames: string[]
-
-  /**
-   * Url for thing, should be made on creation of node
-   */
-  url: string
-
-  /**
-   * Like [Solar], [Crazy Teacup], [Bats in the Belfry Style], [Jam Commissioner Ogwan]
-   */
-  charmSource: string
-
-  /**
    * Name of charm
    */
   name: string
 
   /**
-   * Essence prerequisite
+   * Essence prerequisite, defaults to essence 1
    */
-  essence: number
+  essence?: number | null
 
   /**
    * Simple/Uniform and all that
    */
-  type: string
+  type?: string | null
 
   /**
-   * Mote costs
+   * Mote costs, default is "None (emdash)"
    */
-  cost: string
+  cost?: string | null
 
   /**
-   * Scene/Instant and all that
+   * Scene/Instant and all that, default is "Permanent (no duration)"
    */
-  duration: string
+  duration?: string | null
 
   /**
    * List of charms to do
@@ -81,28 +58,50 @@ export type Charmlike = {
   /**
    * Like "social" or whatever.
    */
-  tags: string[]
+  tags?: string[] | null
 
   /**
    * Uniform/Decisive-only and all that
    */
-  keywords: string[] | string
+  keywords?: string[] | null
 
   /**
    * The "lowdown" synopsis of a charm
    */
-  shortDescription: string
+  shortDescription?: string | null
 }
 
-export const makeCharmlikeNode = (
-  props: CreateNodeArgs,
-  newNode: NodeInput & Charmlike,
-  parentNode: NodeInput,
-) => {
-  const { actions } = props
-  const { createNode, createParentChildLink } = actions
-  createNode(newNode)
+export type CharmlikeNode = Charmlike &
+  NodeInput & {
+    /**
+     * Like [Solar], [Crazy Teacup], [Bats in the Belfry Style], [Jam Commissioner Ogwan]
+     */
+    charmSource: string
 
-  //@ts-ignore child is defined as Node when it could be NodeInput
-  createParentChildLink({ parent: parentNode, child: newNode })
-}
+    /**
+     * Type of thing
+     */
+    charmType: CharmType
+
+    /**
+     * "Name" and "$charmSource $name",
+     * could contain colloquialisms in the future
+     */
+    friendlyNames: string[]
+
+    /**
+     * Url for thing, should be made on creation of node
+     */
+    url: string
+  }
+
+export const charmlikeValidator = yup.object<Charmlike>({
+  type: yup.string().notRequired().nullable().default("Permanent"),
+  duration: yup.string().notRequired().nullable().default("Permanent"),
+  cost: yup.string().trim().notRequired().nullable().default("—"),
+  essence: yup.number().notRequired().nullable().default(1),
+  keywords: yup.array(yup.string()).notRequired().nullable().default([]),
+  name: yup.string().required(),
+  shortDescription: yup.string().notRequired().nullable(),
+  tags: yup.array(yup.string()).notRequired().nullable().default([]),
+})

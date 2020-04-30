@@ -14,7 +14,7 @@ export const query = graphql`
   query SplatTraitPageProvider($splat: String, $trait: String) {
     preface: mdx(
       frontmatter: {
-        content: { eq: "ability preface" }
+        content: { eq: "trait preface" }
         splat: { eq: $splat }
         trait: { eq: $trait }
       }
@@ -22,7 +22,7 @@ export const query = graphql`
       body
     }
 
-    noTreeCharms: allExaltedCharm(
+    noTreeCharms: allExaltedSplatCharm(
       filter: {
         charmSource: { eq: $splat }
         trait: { eq: $trait }
@@ -41,7 +41,7 @@ export const query = graphql`
       }
     }
 
-    charmTrees: allExaltedCharm(
+    charmTrees: allExaltedSplatCharm(
       filter: { charmSource: { eq: $splat }, trait: { eq: $trait } }
       sort: { fields: [tree, essence, rating, name] }
     ) {

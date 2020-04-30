@@ -9,7 +9,7 @@ import { BreadCrumbBar } from "./Common"
 import { OptionalMdxRenderer } from "gatsby-theme-ludobrew-core/src/components/OptionalMdxRenderer"
 
 export const fragments = graphql`
-  fragment SplatCharmPageTagline on ExaltedCharm {
+  fragment SplatCharmPageTagline on ExaltedSplatCharm {
     name
     essence
     rating
@@ -25,7 +25,7 @@ type CharmListProps = {
 }
 
 const CharmList = ({ charms }: CharmListProps) => {
-  const liArray = charms.map(charm => (
+  const liArray = charms.map((charm) => (
     <Styled.li key={charm.name}>
       <CharmTagline charm={charm} />
     </Styled.li>
@@ -59,7 +59,7 @@ const SplatTraitPageLayout: React.FC<any> = ({ data, pageContext }) => {
       <BreadCrumbBar to={[splat]} />
       <Styled.h1>{trait}</Styled.h1>
       <OptionalMdxRenderer mdxNode={preface} />
-      {charmTrees.trees.map(tree => (
+      {charmTrees.trees.map((tree) => (
         <TreeDisplay key={tree.treeName} {...tree} />
       ))}
       <TreeDisplay

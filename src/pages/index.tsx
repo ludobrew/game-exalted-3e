@@ -61,7 +61,7 @@ export const exalted3equery = graphql`
         }
       }
     }
-    splats: allExaltedCharm {
+    splats: allExaltedSplatCharm {
       splatInfo: group(field: splat) {
         name: fieldValue
         count: totalCount

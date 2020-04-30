@@ -17,7 +17,7 @@ export const query = graphql`
     $requires: [String]
     $id: String
   ) {
-    charm: exaltedCharm(id: { eq: $id }) {
+    charm: exaltedSplatCharm(id: { eq: $id }) {
       name
       charmSource
       essence
@@ -43,7 +43,7 @@ export const query = graphql`
       }
     }
 
-    requiredForInSplat: allExaltedCharm(
+    requiredForInSplat: allExaltedSplatCharm(
       sort: { fields: [essence, rating, name], order: ASC }
       filter: { requires: { in: $names }, charmSource: { eq: $charmSource } }
     ) {

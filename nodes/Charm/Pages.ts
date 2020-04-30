@@ -20,9 +20,9 @@ const makeIndividualCharmPages = async (
   const { actions, graphql } = args
   const { createPage } = actions
 
-  const { errors, data } = await graphql(`
+  const { errors, data } = await graphql<any>(`
     {
-      allExaltedCharm {
+      allExaltedSplatCharm {
         nodes {
           id
           url
@@ -38,7 +38,7 @@ const makeIndividualCharmPages = async (
     throw errors
   }
 
-  for (const node of data.allExaltedCharm.nodes) {
+  for (const node of data.allExaltedSplatCharm.nodes) {
     createPage({
       path: node.url,
       component: splatCharmPageComponent,
@@ -63,17 +63,19 @@ const makeSplatPages = async (
 
   const gql = simpleGraphql(graphql)
 
-  type DistinctCharmFieldQuery = { allExaltedCharm: { distinct: string[] } }
+  type DistinctCharmFieldQuery = {
+    allExaltedSplatCharm: { distinct: string[] }
+  }
 
   const splatListing = await gql<DistinctCharmFieldQuery>`
     {
-      allExaltedCharm(filter: { charmType: { eq: splat } }) {
+      allExaltedSplatCharm(filter: { charmType: { eq: splat } }) {
         distinct(field: charmSource)
       }
     }
   `
 
-  for (const splat of splatListing.allExaltedCharm.distinct) {
+  for (const splat of splatListing.allExaltedSplatCharm.distinct) {
     createPage({
       path: pathify(splat),
       component: splatPageComponent,
@@ -84,7 +86,7 @@ const makeSplatPages = async (
 
     const traitListing = await gql<DistinctCharmFieldQuery>`
       {
-        allExaltedCharm(
+        allExaltedSplatCharm(
           filter: {
             charmType: {eq: splat},
             charmSource: {eq: "${splat}"},
@@ -95,7 +97,7 @@ const makeSplatPages = async (
       }
     `
 
-    for (const trait of traitListing.allExaltedCharm.distinct) {
+    for (const trait of traitListing.allExaltedSplatCharm.distinct) {
       createPage({
         path: pathify(splat, trait),
         component: splatTraitPageComponent,

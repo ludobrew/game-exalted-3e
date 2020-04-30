@@ -2,7 +2,6 @@ import { CreateNodeArgs, PluginOptions, CreatePagesArgs } from "gatsby"
 import { FileNode } from "gatsby-theme-ludobrew-core/gatsbyNodeTools"
 import path from "path"
 import glob from "glob"
-import { makeCharmNode } from "./Charm/Charm"
 
 const asyncGlob = (pattern: string, options?: glob.IOptions) => {
   return new Promise<string[]>((resolve, reject) => {
@@ -35,18 +34,39 @@ export const createNodePages = async (
   )
 }
 
-export const handleMDXNode = async (
-  props: CreateNodeArgs,
-  options?: PluginOptions,
-) => {
-  const { node, getNode } = props
-  const fileNode: FileNode = await getNode(node.parent)
+import { handlesContent as artifactHandlers } from "./Artifact"
+import { handlesContent as splatHandlers } from "./Charm/Charm"
+import { Handler } from "./types"
 
-  // TODO: better type frontmatter
-  switch ((node.frontmatter as any).content) {
-    case "charm":
-      return makeCharmNode(props, fileNode, options)
-    default:
+const handlers = {
+  ...artifactHandlers,
+  ...splatHandlers,
+} as Record<string, Handler<any>>
+
+export const handleMDXNode = async (
+  args: CreateNodeArgs<{ frontmatter?: { content?: string } }>,
+  _?: PluginOptions,
+) => {
+  const { node, getNode, reporter } = args
+  const fileNode: FileNode = await getNode(node.parent)
+  if (!node.frontmatter?.content) {
+    reporter.warn(`${fileNode.relativePath} is missing the content field"`)
+    return
+  }
+
+  const contentType = node.frontmatter.content.toLowerCase()
+  if (contentType in handlers) {
+    const { validator, handler } = handlers[contentType]
+    try {
+      const result = await validator.validate(node.frontmatter)
+      const nodePerhaps = await handler({ result, args })
+      return nodePerhaps
+    } catch (e) {
+      reporter.log(
+        `The file at: "/${fileNode.relativePath}" resulted in the following error"`,
+      )
+      reporter.error(e)
       return
+    }
   }
 }

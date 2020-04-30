@@ -67,7 +67,7 @@ export default TraitList
 
 export const TraitListRequiredDataFragment = graphql`
   fragment TraitListRequiredDataFragment on Query {
-    traitList: allExaltedCharm(filter: { charmSource: { eq: $splat } }) {
+    traitList: allExaltedSplatCharm(filter: { charmSource: { eq: $splat } }) {
       traits: group(field: trait) {
         name: fieldValue
         count: totalCount

@@ -1,4 +1,4 @@
 ---
-type: martial art
+content: martial art
 style: Things in the Belfry
 ---

@@ -1,5 +1,5 @@
 ---
-type: charm preface
+content: trait preface
 splat: solar
 ability: Craft
 ---

@@ -1,4 +1,4 @@
 ---
-type: martial art charm
+content: martial art charm
 style: Things in the Belfry
 ---
