@@ -13,7 +13,7 @@
   },
   "license": "MIT",
   "scripts": {
-    "test": "tsc --no-emit",
+    "test": "tsc --noEmit",
     "start": "yarn watch",
     "develop": "gatsby develop",
     "watch": "tsc -w",
