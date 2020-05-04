@@ -6,7 +6,7 @@ import { Charmlike } from "./Charmlike"
 import * as yup from "yup"
 import { buildHandler, FrontmatterHandler, makeAndLinkNode } from "./types"
 
-const basePath = "gatsby-theme-ludobrew-exalted-3e/src/"
+const basePath = "gatsby-theme-ludobrew-exalted-3e/src/components"
 const artifactNodeType = "ExaltedArtifact"
 
 //@ts-ignore
