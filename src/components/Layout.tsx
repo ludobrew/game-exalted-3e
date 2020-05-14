@@ -2,7 +2,7 @@
 import { jsx, Styled } from "theme-ui"
 import { Helmet } from "react-helmet-async"
 import React from "react"
-import { useStaticQuery, graphql } from "gatsby"
+import { useStaticQuery, graphql, Link } from "gatsby"
 import { StyleReset } from "gatsby-theme-ludobrew-core/src/components/StyleReset"
 import { MDXProvider } from "@mdx-js/react"
 
@@ -22,7 +22,7 @@ const PreloadFont = ({ family, sizes }: PreloadFontProps) => {
   )
 }
 
-export default props => {
+export default (props) => {
   const data = useStaticQuery(graphql`
     query GetSiteTitleAndDescription {
       site {

@@ -2,12 +2,13 @@
 // name: Grand Oak Weights
 import { NodeInput } from "gatsby"
 import { pathify } from "gatsby-theme-ludobrew-core/gatsbyNodeTools"
-import { Charmlike } from "./Charmlike"
+import { charmlikeValidator } from "./Charmlike"
 import * as yup from "yup"
 import { buildHandler, FrontmatterHandler, makeAndLinkNode } from "./types"
 
 const basePath = "gatsby-theme-ludobrew-exalted-3e/src/components"
 const artifactNodeType = "ExaltedArtifact"
+const evocationNodeType = "ExaltedEvocation"
 
 //@ts-ignore
 const artifactTypePageComponent = require.resolve(
@@ -23,10 +24,6 @@ const artifactTypePageComponent = require.resolve(
 // materials: [] # Primary MMs for indexing
 // tags: [Movement]
 
-export type Evocation = {
-  artifact: string
-} & Charmlike
-
 const baseArtifactValidator = yup.object({
   content: yup
     .string()
@@ -34,30 +31,108 @@ const baseArtifactValidator = yup.object({
     .matches(/artifact/)
     .required(),
   name: yup.string().required(),
-  type: yup
-    .string()
-    .lowercase()
-    .oneOf(["weapon", "armor", "other", null])
-    .nullable()
-    .default(null),
+  type: yup.string().lowercase().nullable().default(null),
   rating: yup.number().min(2).max(6).nullable().required(),
-  materials: yup.array().of(yup.string()).default([]),
-  tags: yup.array().of(yup.string()).default([]),
+  materials: yup.array().of(yup.string()).nullable().default([]),
+  resonance: yup.array().of(yup.string()).nullable().default([]),
+  hearthstoneSlots: yup.number().nullable().notRequired().default(0),
+  attunement: yup.string().nullable().notRequired().default(null),
+  tags: yup.array().of(yup.string()).nullable().default([]),
 })
 export type BaseArtifact = yup.InferType<typeof baseArtifactValidator>
 
-const artifactWeaponValidator = yup.object({
-  type: yup.string().lowercase().matches(/armor/).required(),
+type ArtifactWeaponAdditionalProperties = {
+  type: "weapon"
+  weight: ArtifactWeight
+  damage?: number | null
+  accuracy?: number | null
+  overwhelming?: number | null
+  defense?: number | null
+  combatTypes: CombatType[]
+}
+
+/**
+ * Melee is "something that can be used as a regular weapon"
+ */
+export type CombatType = "archery" | "thrown" | "melee"
+
+const artifactWeaponValidator = baseArtifactValidator.shape<
+  ArtifactWeaponAdditionalProperties
+>({
+  type: yup
+    .string<"weapon">()
+    .lowercase()
+    .matches(/weapon/)
+    .required(),
+  combatTypes: yup
+    .array(yup.string<CombatType>())
+    .notRequired()
+    .nullable()
+    .default(["melee"]) as yup.Schema<CombatType[]>,
   weight: yup
     .string()
     .lowercase()
-    .oneOf(["light", "medium", "heavy"])
-    .default("light"),
-  accuracy: yup.number().notRequired(),
-  overwhelming: yup.number().notRequired(),
-  defense: yup.number().notRequired(),
-  attunement: yup.string().notRequired(),
+    .oneOf(["light", "medium", "heavy"]) as yup.Schema<ArtifactWeight>,
+  damage: yup.number().notRequired().default(null),
+  accuracy: yup.number().notRequired().default(null),
+  overwhelming: yup.number().notRequired().default(null),
+  defense: yup.number().notRequired().default(null),
 })
+
+const getWeaponWithDefaults = (artifact: ArtifactWeapon): ArtifactWeapon => {
+  const defaults: Partial<ArtifactWeapon> = {}
+  switch (artifact.weight) {
+    // Thrown + Archery:
+    // dmg / ow / attunement
+    // l: 10 / 3 / 5
+    // m: 12 / 4 / 5
+    // h: 14 / 5 / 5
+    // Note: display ranges probably for thrown things?
+    // Inspect tags add additional info?
+    //    acc / dmg / def / ow / attunement
+    // l: 5 / 10 / 3 / 5
+    // m: 3 / 12 / 4 / 5
+    // h: 1 / 14 / 5 / 5
+    case "light":
+      defaults.accuracy = 5
+      defaults.damage = 10
+      defaults.attunement = "5m"
+      defaults.overwhelming = 3
+      defaults.defense = 0
+      break
+    case "medium":
+      defaults.accuracy = 3
+      defaults.damage = 12
+      defaults.attunement = "5m"
+      defaults.overwhelming = 4
+      defaults.defense = 1
+      break
+    case "heavy":
+      defaults.accuracy = 1
+      defaults.damage = 14
+      defaults.attunement = "5m"
+      defaults.overwhelming = 5
+      defaults.defense = 0
+      break
+  }
+
+  return {
+    ...defaults,
+    ...artifact,
+  }
+}
+
+type EvocationAdditionalProperties = {
+  artifact: string
+}
+
+const evocationValidator = charmlikeValidator.shape<
+  EvocationAdditionalProperties
+>({
+  artifact: yup.string().required(),
+})
+
+export type Evocation = yup.InferType<typeof evocationValidator>
 
 export type ArtifactWeapon = yup.InferType<typeof artifactWeaponValidator>
 
@@ -90,12 +165,18 @@ export type Weapon = BaseArtifact & {
   type: "weapon"
 }
 
-const artifactHandler: FrontmatterHandler<BaseArtifact> = ({
+const artifactHandler: FrontmatterHandler<BaseArtifact | ArtifactWeapon> = ({
   result,
   args,
 }) => {
   const { node: mdxNode, createContentDigest, createNodeId } = args
-  const { name } = result
+  const { name, type } = result
+  switch (type) {
+    case "weapon":
+      result = getWeaponWithDefaults(result as ArtifactWeapon)
+      break
+  }
+
   const newNode: NodeInput & BaseArtifact = {
     ...result,
     parent: mdxNode.id,
@@ -111,13 +192,33 @@ const artifactHandler: FrontmatterHandler<BaseArtifact> = ({
   return
 }
 
+const evocationHandler: FrontmatterHandler<Evocation> = ({ result, args }) => {
+  const { node: mdxNode, createContentDigest, createNodeId } = args
+  const { name, artifact } = result
+  const newNode: NodeInput & Evocation = {
+    ...result,
+    parent: mdxNode.id,
+    url: pathify("artifact", artifact, name),
+    id: createNodeId(
+      `${mdxNode.id} >>> ${evocationNodeType}${artifact}${name}`,
+    ),
+    internal: {
+      type: evocationNodeType,
+      contentDigest: createContentDigest(result),
+      description: "It does stuff",
+    },
+  }
+  makeAndLinkNode<Evocation>({ args, newNode, parentNode: mdxNode })
+  return
+}
+
 export const handlesContent = {
   artifact: buildHandler({
     validator: baseArtifactValidator,
     handler: artifactHandler,
   }),
-  // evocation: buildHandler({
-  //   validator: evocationValidator,
-  //   handler: evocationHandler,
-  // }),
+  evocation: buildHandler({
+    validator: evocationValidator,
+    handler: evocationHandler,
+  }),
 }
