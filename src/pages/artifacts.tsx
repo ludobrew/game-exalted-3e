@@ -73,7 +73,6 @@ const CategoryGroupListing = ({
 
 export default (props: any) => {
   const { data } = props
-  console.log(props)
   return (
     <Layout>
       <BreadCrumbBar />

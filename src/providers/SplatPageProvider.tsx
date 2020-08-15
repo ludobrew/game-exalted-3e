@@ -5,7 +5,6 @@ import { graphql } from "gatsby"
 import SplatPageLayout from "../components/SplatPageLayout"
 
 const SplatPageProvider: React.FC<any> = ({ data, pageContext }) => {
-  console.log({ data })
   return <SplatPageLayout data={data} pageContext={pageContext} />
 }
 
