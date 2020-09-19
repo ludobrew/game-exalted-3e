@@ -27,8 +27,8 @@
     "glob": "7.1.6"
   },
   "dependencies": {
-    "@mdx-js/mdx": "^1.6.17",
-    "@mdx-js/react": "^1.6.17",
+    "@mdx-js/mdx": "^1.6.18",
+    "@mdx-js/react": "^1.6.18",
     "gatsby-plugin-mdx": "^1.2.40"
   }
 }
