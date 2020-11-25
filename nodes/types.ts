@@ -30,7 +30,7 @@ export const makeAndLinkNode = <T = any>({
   const { createNode, createParentChildLink } = actions
   createNode(newNode)
 
-  //@ts-ignore child is defined as Node when it could be NodeInput
+  //@ts-ignore TODO: child is defined as Node when it could be NodeInput
   createParentChildLink({ parent: parentNode, child: newNode })
 }
 

@@ -1,22 +1,7 @@
-const path = require("path")
+//@ts-ignore doesn't have typdefs TODO Find them?
+const tsconfig = require("gatsby-plugin-ts-config")
 
-require('source-map-support').install()
-require('ts-node').register({
-  project: path.resolve(path.join(__dirname, "tsconfig.json")),
-  transpileOnly: true
+module.exports = tsconfig.generateConfig({
+  configDir: ".gatsby",
+  projectRoot: __dirname,
 })
-
-module.exports = (themeOptions) => {
-  return {
-    plugins: [
-      "gatsby-theme-ludobrew-core",
-      {
-        resolve: "gatsby-source-filesystem",
-        options: {
-          path: "homebrew",
-          ignore: [`**/\.*`],
-        },
-      }
-    ]
-  }
-}

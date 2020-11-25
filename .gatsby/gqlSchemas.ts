@@ -1,5 +1,4 @@
-import { GatsbyNode } from "gatsby"
-
+// TODO: Make this just a gql?
 const charmlikeInterface = `
 """
 Generated names to check for auto-linking
@@ -72,35 +71,22 @@ The "lowdown" synopsis of a charm
 shortDescription: String
 `
 
-// TODO: props should be auto inferred
-const extensionPoint: GatsbyNode["createSchemaCustomization"] = async (
-  props,
-  options,
-) => {
-  const { actions } = props
-  const { createTypes } = actions
+export const typeDefs = `
+  enum CharmType {
+    splat
+    ma
+    evocation
+    eclipse
+    other
+  }
 
-  const typeDefs = `
-    enum CharmType {
-      splat
-      ma
-      evocation
-      eclipse
-      other
-    }
+  interface Charmlike @nodeInterface {
+    id: ID!
+    ${charmlikeInterface}
+  }
 
-    interface Charmlike @nodeInterface {
-      id: ID!
-      ${charmlikeInterface}
-    }
-
-    type ExaltedSplatCharm implements Node & Charmlike {
-      id: ID!
-      ${charmlikeInterface}
-    }
-  `
-  createTypes(typeDefs)
-  return
-}
-
-export default extensionPoint
+  type ExaltedSplatCharm implements Node & Charmlike {
+    id: ID!
+    ${charmlikeInterface}
+  }
+`

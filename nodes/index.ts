@@ -43,12 +43,12 @@ const handlers = {
   ...splatHandlers,
 } as Record<string, Handler<any>>
 
-export const handleMDXNode = async (
+export const onCreateNode = async (
   args: CreateNodeArgs<{ frontmatter?: { content?: string } }>,
   _?: PluginOptions,
 ) => {
   const { node, getNode, reporter } = args
-  const fileNode: FileNode = await getNode(node.parent)
+  const fileNode = (await getNode(node.parent)) as FileNode
   if (!node.frontmatter?.content) {
     reporter.warn(`${fileNode.relativePath} is missing the content field"`)
     return

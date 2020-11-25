@@ -1,8 +1,6 @@
 /** @jsx jsx */
 import { jsx, Styled } from "theme-ui"
 import { GatsbyLinkProps, Link } from "gatsby"
-import { gameShortName } from "gatsby-theme-ludobrew-exalted-3e/src/data"
-import { pathify } from "gatsby-theme-ludobrew-core/gatsbyNodeTools"
 
 export const StyledLink = (props: GatsbyLinkProps<unknown>) => (
   <Styled.a as={Link} {...(props as any)} />
