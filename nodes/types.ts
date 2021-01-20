@@ -11,7 +11,7 @@ export type FrontmatterHandler<T> = (
 ) => Node | void | Promise<void | Node>
 
 export type Handler<T> = {
-  validator: yup.Schema<T>
+  validator: yup.SchemaOf<T>
   handler: FrontmatterHandler<T>
 }
 

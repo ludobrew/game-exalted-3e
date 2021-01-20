@@ -24,7 +24,7 @@ export type CharmRequirement = {
   id?: string
 }
 
-export type Charmlike = {
+export interface Charmlike {
   /**
    * Name of charm
    */
@@ -95,13 +95,14 @@ export type CharmlikeNode = Charmlike &
     url: string
   }
 
-export const charmlikeValidator = yup.object<Charmlike>({
-  type: yup.string().notRequired().nullable().default("Permanent"),
-  duration: yup.string().notRequired().nullable().default("Permanent"),
+export const charmlikeValidator: yup.SchemaOf<Charmlike> = yup.object({
+  requires: yup.array(yup.string()).notRequired().nullable().default([]),
+  type: yup.string().notRequired().default("Permanent"),
+  duration: yup.string().notRequired().default("Permanent"),
   cost: yup.string().trim().notRequired().nullable().default("—"),
-  essence: yup.number().notRequired().nullable().default(1),
+  essence: yup.number().notRequired().default(1),
   keywords: yup.array(yup.string()).notRequired().nullable().default([]),
-  name: yup.string().required(),
-  shortDescription: yup.string().notRequired().nullable(),
-  tags: yup.array(yup.string()).notRequired().nullable().default([]),
+  name: yup.string().required("You are missing a name"),
+  shortDescription: yup.string().nullable().notRequired(),
+  tags: yup.array(yup.string()).notRequired().default([]),
 })

@@ -99,7 +99,7 @@ const theme = {
       },
       tbody: {
         tr: {
-          ":nth-child(even)": {
+          ":nth-of-type(even)": {
             bg: "grey.0",
           },
           ":hover": {

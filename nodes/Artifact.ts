@@ -2,7 +2,7 @@
 // name: Grand Oak Weights
 import { NodeInput } from "gatsby"
 import { pathify } from "gatsby-theme-ludobrew-core/gatsbyNodeTools"
-import { charmlikeValidator } from "./Charmlike"
+import { Charmlike, charmlikeValidator } from "./Charmlike"
 import * as yup from "yup"
 import { buildHandler, FrontmatterHandler, makeAndLinkNode } from "./types"
 
@@ -39,9 +39,10 @@ const baseArtifactValidator = yup.object({
   attunement: yup.string().nullable().notRequired().default(null),
   tags: yup.array().of(yup.string()).nullable().default([]),
 })
-export type BaseArtifact = yup.InferType<typeof baseArtifactValidator>
+export interface BaseArtifact
+  extends yup.TypeOf<typeof baseArtifactValidator> {}
 
-type ArtifactWeaponAdditionalProperties = {
+interface ArtifactWeaponAdditionalProperties extends BaseArtifact {
   type: "weapon"
   weight: ArtifactWeight
   damage?: number | null
@@ -56,28 +57,29 @@ type ArtifactWeaponAdditionalProperties = {
  */
 export type CombatType = "archery" | "thrown" | "melee"
 
-const artifactWeaponValidator = baseArtifactValidator.shape<
-  ArtifactWeaponAdditionalProperties
->({
-  type: yup
-    .string<"weapon">()
-    .lowercase()
-    .matches(/weapon/)
-    .required(),
-  combatTypes: yup
-    .array(yup.string<CombatType>())
-    .notRequired()
-    .nullable()
-    .default(["melee"]) as yup.Schema<CombatType[]>,
-  weight: yup
-    .string()
-    .lowercase()
-    .oneOf(["light", "medium", "heavy"]) as yup.Schema<ArtifactWeight>,
-  damage: yup.number().notRequired().default(null),
-  accuracy: yup.number().notRequired().default(null),
-  overwhelming: yup.number().notRequired().default(null),
-  defense: yup.number().notRequired().default(null),
-})
+const artifactWeaponValidator: yup.SchemaOf<ArtifactWeaponAdditionalProperties> = baseArtifactValidator.shape(
+  {
+    type: yup.string().lowercase().equals(["weapon"]).required(),
+    combatTypes: yup
+      .array(yup.string().equals(["archery", "thrown", "melee"]))
+      .notRequired()
+      .nullable()
+      .default(["melee"]),
+    weight: yup
+      .string()
+      .lowercase()
+      .oneOf([
+        "light",
+        "medium",
+        "heavy",
+        null,
+      ]) as yup.SchemaOf<ArtifactWeight>,
+    damage: yup.number().notRequired().default(null),
+    accuracy: yup.number().notRequired().default(null),
+    overwhelming: yup.number().notRequired().default(null),
+    defense: yup.number().notRequired().default(null),
+  },
+)
 
 const getWeaponWithDefaults = (artifact: ArtifactWeapon): ArtifactWeapon => {
   const defaults: Partial<ArtifactWeapon> = {}
@@ -122,15 +124,15 @@ const getWeaponWithDefaults = (artifact: ArtifactWeapon): ArtifactWeapon => {
   }
 }
 
-type EvocationAdditionalProperties = {
+interface EvocationAdditionalProperties extends Charmlike {
   artifact: string
 }
 
-const evocationValidator = charmlikeValidator.shape<
-  EvocationAdditionalProperties
->({
-  artifact: yup.string().required(),
-})
+const evocationValidator: yup.SchemaOf<EvocationAdditionalProperties> = charmlikeValidator.shape(
+  {
+    artifact: yup.string().required(),
+  },
+)
 
 export type Evocation = yup.InferType<typeof evocationValidator>
 

@@ -48,7 +48,11 @@ export const handleMDXNode = async (
   _?: PluginOptions,
 ) => {
   const { node, getNode, reporter } = args
-  const fileNode: FileNode = await getNode(node.parent)
+  if (!node?.parent) {
+    reporter.error("Node missing node.parent")
+    return
+  }
+  const fileNode = (await getNode(node.parent)) as FileNode
   if (!node.frontmatter?.content) {
     reporter.warn(`${fileNode.relativePath} is missing the content field"`)
     return
@@ -57,16 +61,17 @@ export const handleMDXNode = async (
   const contentType = node.frontmatter.content.toLowerCase()
   if (contentType in handlers) {
     const { validator, handler } = handlers[contentType]
+    let validResult = null
     try {
-      const result = await validator.validate(node.frontmatter)
-      const nodePerhaps = await handler({ result, args })
-      return nodePerhaps
+      validResult = await validator.validate(node.frontmatter)
     } catch (e) {
-      reporter.log(
-        `The file at: "/${fileNode.relativePath}" resulted in the following error"`,
+      //@ts-ignore
+      reporter.error(
+        `There are validation errors for ${fileNode.relativePath}:\n\t` +
+          e.errors.join("\n\t"),
       )
-      reporter.error(e)
-      return
     }
+    const nodePerhaps = await handler({ result: validResult, args })
+    return nodePerhaps
   }
 }
