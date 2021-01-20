@@ -27,8 +27,9 @@
     "glob": "7.1.6"
   },
   "dependencies": {
-    "@mdx-js/mdx": "^1.6.18",
-    "@mdx-js/react": "^1.6.18",
-    "gatsby-plugin-mdx": "^1.2.40"
+    "@mdx-js/mdx": "1.6.22",
+    "@mdx-js/react": "1.6.22",
+    "gatsby-plugin-mdx": "1.9.0",
+    "react-helmet-async": "1.0.7"
   }
 }
